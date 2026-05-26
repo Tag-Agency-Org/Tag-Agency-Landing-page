@@ -1,13 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowRight, Gauge, LineChart, Search, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { phoneHref } from "@/lib/site-data";
 
 export function HeroControlRoom() {
-  const modules = ["Lead Quality Monitoring", "Creative Testing", "Search Intent Review", "Conversion Tracking"];
-  const icons = [Gauge, LineChart, Search, ShieldCheck];
-
   return (
     <section id="top" className="relative overflow-hidden bg-[#09111A] pt-28">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_20%,rgba(62,134,245,0.18),transparent_28%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent)]" />
@@ -39,82 +37,21 @@ export function HeroControlRoom() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
           whileHover={{ y: -4 }}
-          className="panel relative rounded-lg p-4 sm:p-6"
-          aria-label="Illustrative campaign signal overview"
+          className="relative"
+          aria-label="TAG Agency Meta Business Partner creative"
         >
-          <div className="flex flex-col gap-4 rounded-md border border-white/10 bg-[#101B27]/95 p-4 sm:p-6">
-            <div className="flex flex-wrap items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#D6A64F]">Campaign Signal Overview</p>
-                <h2 className="mt-2 font-[var(--font-manrope)] text-2xl font-extrabold">Quality signal dashboard</h2>
-              </div>
-              <div className="flex gap-2 text-xs font-bold">
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">Meta Ads</span>
-                <span className="rounded-full border border-white/10 bg-white/5 px-3 py-2">Google Ads</span>
-              </div>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              {["Enquiry", "Qualified Review", "Sales Follow-up"].map((stage, index) => (
-                <motion.div
-                  key={stage}
-                  initial={{ opacity: 0, y: 14 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 + index * 0.1 }}
-                  className="rounded-md border border-white/10 bg-white/[0.04] p-4"
-                >
-                  <span className="text-xs font-bold text-[#3E86F5]">0{index + 1}</span>
-                  <p className="mt-2 text-sm font-bold">{stage}</p>
-                </motion.div>
-              ))}
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              {modules.map((module, index) => {
-                const Icon = icons[index];
-                return (
-                  <motion.div
-                    key={module}
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + index * 0.08 }}
-                    className="flex items-center gap-3 rounded-md border border-white/10 bg-[#09111A] p-4"
-                  >
-                    <span className="flex h-10 w-10 items-center justify-center rounded-md bg-[#3E86F5]/12 text-[#3E86F5]">
-                      <Icon size={18} />
-                    </span>
-                    <span className="text-sm font-bold">{module}</span>
-                  </motion.div>
-                );
-              })}
-            </div>
-
-            <div className="rounded-md border border-white/10 bg-[#07101A] p-4">
-              <div className="mb-5 flex items-center justify-between gap-4">
-                <p className="text-sm font-bold">Illustrative Campaign View</p>
-                <span className="text-xs text-[#AFBAC7]">Sample UI labels only</span>
-              </div>
-              <div className="flex h-32 items-end gap-2">
-                {[36, 52, 44, 68, 58, 78, 72, 88].map((height, index) => (
-                  <motion.span
-                    key={index}
-                    className="origin-bottom flex-1 rounded-t bg-[#3E86F5]/80"
-                    style={{ height: `${height}%`, opacity: 0.46 + index * 0.05 }}
-                    initial={{ scaleY: 0.4 }}
-                    animate={{ scaleY: [0.78, 1, 0.86] }}
-                    transition={{
-                      duration: 2.6,
-                      delay: index * 0.12,
-                      repeat: Infinity,
-                      repeatType: "mirror",
-                      ease: "easeInOut"
-                    }}
-                  />
-                ))}
-              </div>
-              <span className="signal-pulse mt-4 block h-px w-full origin-left bg-gradient-to-r from-transparent via-[#D6A64F] to-transparent" />
-            </div>
+          <div className="absolute -inset-8 rounded-full bg-[#3E86F5]/10 blur-3xl" />
+          <div className="relative overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#F7F5F0] shadow-2xl">
+            <Image
+              src="/assets/tag-agency/hero-bus-head.png"
+              alt="TAG Agency Meta Business Partner performance marketing creative"
+              width={1200}
+              height={1200}
+              priority
+              className="h-auto w-full object-contain"
+            />
           </div>
+          <div className="pointer-events-none absolute inset-0 rounded-[1.5rem] ring-1 ring-white/10" />
         </motion.div>
       </div>
     </section>

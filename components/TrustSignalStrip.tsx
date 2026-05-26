@@ -15,6 +15,7 @@ const signals = [
 
 export function TrustSignalStrip({ assets }: Props) {
   const logos = suppliedClientLogoFiles.filter((filename) => assets[filename]);
+  const logoRows = [logos, logos, logos];
 
   return (
     <section className="border-y border-white/10 bg-[#101B27] py-12">
@@ -27,9 +28,10 @@ export function TrustSignalStrip({ assets }: Props) {
         <div className="mt-7 grid gap-3 md:grid-cols-4">
           {signals.map((signal, index) => (
             <ScrollReveal key={signal} delay={index * 0.05}>
-            <div className="rounded-md border border-white/10 bg-white/[0.035] p-4 text-sm font-bold text-[#F5F3EE] transition hover:border-[#D6A64F]/30 hover:bg-white/[0.06]">
-              {signal}
-            </div>
+              <div className="trust-signal-box group relative flex min-h-28 items-center overflow-hidden rounded-md border border-white/10 bg-white/[0.035] p-5 text-center text-sm font-extrabold leading-6 text-[#F5F3EE] transition hover:border-[#D6A64F]/40 hover:bg-white/[0.065]">
+                <span className="trust-signal-scan" style={{ animationDelay: `${index * 0.7}s` }} aria-hidden="true" />
+                <span className="relative z-10 mx-auto max-w-[13rem]">{signal}</span>
+              </div>
             </ScrollReveal>
           ))}
         </div>
@@ -38,19 +40,14 @@ export function TrustSignalStrip({ assets }: Props) {
             Businesses Featured in Our Current Portfolio
           </p>
           {logos.length ? (
-            <div className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
-              {logos.map((logo) => (
-                <div
-                  key={logo}
-                  className="logo-tile flex h-24 items-center justify-center rounded-md border border-white/10 bg-white p-5"
-                >
-                  <Image
-                    src={`/assets/tag-agency/${logo}`}
-                    alt="TAG Agency client logo"
-                    width={150}
-                    height={70}
-                    className="max-h-16 w-auto object-contain"
-                  />
+            <div className="mt-5 grid gap-4" aria-label="TAG Agency client logo showcase">
+              {logoRows.map((row, rowIndex) => (
+                <div key={rowIndex} className="logo-marquee">
+                  <div className={`logo-marquee-track ${rowIndex === 1 ? "reverse" : ""}`}>
+                    {[...row, ...row].map((logo, index) => (
+                      <LogoTile key={`${rowIndex}-${logo}-${index}`} logo={logo} />
+                    ))}
+                  </div>
                 </div>
               ))}
             </div>
@@ -62,5 +59,19 @@ export function TrustSignalStrip({ assets }: Props) {
         </ScrollReveal>
       </div>
     </section>
+  );
+}
+
+function LogoTile({ logo }: { logo: string }) {
+  return (
+    <div className="logo-tile flex h-24 items-center justify-center rounded-md border border-white/10 bg-white p-5">
+      <Image
+        src={`/assets/tag-agency/${logo}`}
+        alt="TAG Agency client logo"
+        width={150}
+        height={70}
+        className="max-h-16 w-auto object-contain"
+      />
+    </div>
   );
 }

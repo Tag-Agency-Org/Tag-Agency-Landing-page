@@ -52,9 +52,9 @@ export function Header({ hasLogo }: Props) {
             <span className="font-[var(--font-manrope)] text-xl font-extrabold tracking-wide">TAG Agency</span>
           )}
         </a>
-        <nav className="hidden items-center gap-7 text-sm font-semibold text-[#AFBAC7] lg:flex" aria-label="Primary">
+        <nav className="nav-dock hidden items-center gap-2 text-sm font-semibold text-[#AFBAC7] lg:flex" aria-label="Primary">
           {navItems.map(([label, href]) => (
-            <a key={label} href={href} className="transition hover:text-white">
+            <a key={label} href={href} className="nav-dock-item">
               {label}
             </a>
           ))}

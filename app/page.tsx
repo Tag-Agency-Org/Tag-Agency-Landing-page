@@ -1,5 +1,4 @@
 import { AgencyFocus } from "@/components/AgencyFocus";
-import { CaseStudyEvidence } from "@/components/CaseStudyEvidence";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeroControlRoom } from "@/components/HeroControlRoom";
@@ -27,7 +26,6 @@ export default function Home() {
         <ProblemDiagnostics />
         <ServiceArchitecture />
         <ProcessTimeline />
-        <CaseStudyEvidence />
         <IndustryUseCases assets={assets} />
         <WhyTagAgency />
         <AgencyFocus assets={assets} />
