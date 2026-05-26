@@ -76,11 +76,12 @@ a {
   border: 1px solid transparent;
   padding: 13px 20px;
   font-weight: 800;
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
 .button:hover {
   transform: translateY(-1px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
 }
 
 .button-primary {
@@ -112,11 +113,78 @@ a {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.045);
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease;
+}
+
+.panel:hover {
+  transform: translateY(-2px);
+  border-color: rgba(214, 166, 79, 0.25);
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .light-panel {
   border: 1px solid rgba(20, 32, 43, 0.12);
   background: rgba(255, 255, 255, 0.64);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.light-panel:hover {
+  transform: translateY(-2px);
+  border-color: rgba(62, 134, 245, 0.28);
+  box-shadow: 0 18px 42px rgba(20, 32, 43, 0.08);
+}
+
+.signal-pulse {
+  animation: signalPulse 2.8s ease-in-out infinite;
+}
+
+.typing-caret {
+  display: inline-block;
+  height: 0.9em;
+  margin-left: 4px;
+  width: 2px;
+  transform: translateY(0.12em);
+  background: var(--gold);
+  animation: caretBlink 900ms steps(1) infinite;
+}
+
+.origin-bottom {
+  transform-origin: bottom;
+}
+
+.logo-tile {
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.logo-tile:hover {
+  transform: translateY(-3px);
+  border-color: rgba(214, 166, 79, 0.35);
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.22);
+}
+
+@keyframes signalPulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scaleX(0.94);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes caretBlink {
+  0%,
+  48% {
+    opacity: 1;
+  }
+
+  49%,
+  100% {
+    opacity: 0;
+  }
 }
 
 .asset-placeholder {

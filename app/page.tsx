@@ -11,15 +11,16 @@ import { ServiceArchitecture } from "@/components/ServiceArchitecture";
 import { StrategyCallForm } from "@/components/StrategyCallForm";
 import { TrustSignalStrip } from "@/components/TrustSignalStrip";
 import { WhyTagAgency } from "@/components/WhyTagAgency";
+import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 import { collectAssetStatus } from "@/lib/assets";
-import { assetFilenames } from "@/lib/site-data";
+import { assetFilenames, suppliedClientLogoFiles } from "@/lib/site-data";
 
 export default function Home() {
-  const assets = collectAssetStatus(assetFilenames);
+  const assets = collectAssetStatus([...assetFilenames, ...suppliedClientLogoFiles]);
 
   return (
     <>
-      <Header hasLightLogo={assets["tag-logo-light.svg"]} />
+      <Header hasLogo={assets["tag-agency-logo-cropped.png"]} />
       <main>
         <HeroControlRoom />
         <TrustSignalStrip assets={assets} />
@@ -32,8 +33,9 @@ export default function Home() {
         <AgencyFocus assets={assets} />
         <StrategyCallForm />
       </main>
-      <Footer hasDarkLogo={assets["tag-logo-dark.svg"]} />
+      <Footer hasLogo={assets["tag-agency-logo-cropped.png"]} />
       <MobileStickyCTA />
+      <WhatsAppWidget />
     </>
   );
 }

@@ -40,6 +40,7 @@ export function ProcessTimeline() {
               <span className="flex h-16 w-16 items-center justify-center rounded-full border border-[#14202B]/14 bg-[#F7F5F0] font-[var(--font-manrope)] text-xl font-extrabold text-[#3E86F5]">
                 0{index + 1}
               </span>
+              <span className="signal-pulse mt-5 block h-px w-full origin-left bg-gradient-to-r from-[#3E86F5] via-[#D6A64F] to-transparent lg:hidden" />
               <h3 className="mt-8 font-[var(--font-manrope)] text-xl font-extrabold">{title}</h3>
               <p className="mt-3 text-sm leading-6 text-[#465464]">{copy}</p>
             </motion.article>

@@ -5,6 +5,8 @@ import { Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { ScrollReveal } from "./ScrollReveal";
+import { TypingHeadline } from "./TypingHeadline";
 
 const schema = z.object({
   fullName: z.string().min(2, "Enter your full name"),
@@ -114,11 +116,12 @@ export function StrategyCallForm() {
   return (
     <section id="contact" className="section bg-[#09111A]">
       <div className="container grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="panel rounded-lg p-6 md:p-8">
+        <ScrollReveal className="panel rounded-lg p-6 md:p-8">
           <p className="eyebrow">Strategy call</p>
-          <h2 className="mt-4 font-[var(--font-manrope)] text-4xl font-extrabold leading-tight md:text-5xl">
-            Ready to Build a Stronger Lead Generation System?
-          </h2>
+          <TypingHeadline
+            text="Ready to Build a Stronger Lead Generation System?"
+            className="mt-4 min-h-[9.6rem] font-[var(--font-manrope)] text-4xl font-extrabold leading-tight md:min-h-[7.5rem] md:text-5xl"
+          />
           <p className="mt-5 text-lg leading-8 text-[#AFBAC7]">
             Tell us about your business, current advertising activity and primary challenge. Our team will review your
             enquiry and connect with you for a focused strategy discussion.
@@ -134,8 +137,9 @@ export function StrategyCallForm() {
               </li>
             ))}
           </ul>
-        </div>
+        </ScrollReveal>
 
+        <ScrollReveal delay={0.08}>
         <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg bg-[#F7F5F0] p-5 text-[#14202B] shadow-2xl md:p-8">
           <div className="mb-7">
             <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#3E86F5]">Qualified enquiry</p>
@@ -204,6 +208,7 @@ export function StrategyCallForm() {
             ) : null}
           </div>
         </form>
+        </ScrollReveal>
       </div>
     </section>
   );

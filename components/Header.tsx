@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { MissingAssetPlaceholder } from "./MissingAssetPlaceholder";
+import { phoneHref } from "@/lib/site-data";
 
 const navItems = [
   ["Services", "#services"],
@@ -15,10 +15,10 @@ const navItems = [
 ];
 
 type Props = {
-  hasLightLogo: boolean;
+  hasLogo: boolean;
 };
 
-export function Header({ hasLightLogo }: Props) {
+export function Header({ hasLogo }: Props) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -37,8 +37,17 @@ export function Header({ hasLightLogo }: Props) {
     >
       <div className="container flex h-20 items-center justify-between gap-6">
         <a href="#top" className="flex min-w-[132px] items-center" aria-label="TAG Agency home">
-          {hasLightLogo ? (
-            <Image src="/assets/tag-agency/tag-logo-light.svg" alt="TAG Agency" width={132} height={42} priority />
+          {hasLogo ? (
+            <span className="flex h-12 w-36 items-center justify-center rounded-md bg-[#F7F5F0] px-3">
+              <Image
+                src="/assets/tag-agency/tag-agency-logo-cropped.png"
+                alt="TAG Agency"
+                width={180}
+                height={44}
+                priority
+                className="max-h-9 w-auto object-contain"
+              />
+            </span>
           ) : (
             <span className="font-[var(--font-manrope)] text-xl font-extrabold tracking-wide">TAG Agency</span>
           )}
@@ -50,7 +59,7 @@ export function Header({ hasLightLogo }: Props) {
             </a>
           ))}
         </nav>
-        <a href="#contact" className="button button-primary desktop-header-cta">
+        <a href={phoneHref} className="button button-primary desktop-header-cta" aria-label="Call TAG Agency to book a strategy call">
           Book a Strategy Call
         </a>
         <button
@@ -75,7 +84,7 @@ export function Header({ hasLightLogo }: Props) {
                 {label}
               </a>
             ))}
-            <a href="#contact" className="button button-primary mt-2" onClick={() => setOpen(false)}>
+            <a href={phoneHref} className="button button-primary mt-2" onClick={() => setOpen(false)}>
               Book a Strategy Call
             </a>
           </nav>

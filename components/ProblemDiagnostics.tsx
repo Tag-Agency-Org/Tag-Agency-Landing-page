@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { ScrollReveal } from "./ScrollReveal";
 
 const diagnostics = [
   {
@@ -27,7 +28,7 @@ export function ProblemDiagnostics() {
   return (
     <section className="section bg-[#F7F5F0] text-[#14202B]">
       <div className="container grid gap-12 lg:grid-cols-[0.72fr_1.28fr]">
-        <div>
+        <ScrollReveal>
           <p className="eyebrow">Diagnostic review</p>
           <h2 className="mt-4 font-[var(--font-manrope)] text-4xl font-extrabold leading-tight md:text-5xl">
             Running Ads Is Easy. Generating the Right Leads Is Not.
@@ -40,10 +41,11 @@ export function ProblemDiagnostics() {
           <a href="#contact" className="button button-dark mt-7">
             Talk to a Performance Strategist <ArrowRight size={18} />
           </a>
-        </div>
+        </ScrollReveal>
         <div className="grid gap-4 md:grid-cols-2">
           {diagnostics.map((item, index) => (
-            <article key={item.title} className="light-panel rounded-md p-6">
+            <ScrollReveal key={item.title} delay={index * 0.06}>
+            <article className="light-panel rounded-md p-6">
               <div className="flex items-center justify-between border-b border-[#14202B]/10 pb-5">
                 <span className="text-xs font-extrabold tracking-[0.14em] text-[#3E86F5]">{item.label}</span>
                 <span className="font-[var(--font-manrope)] text-sm font-extrabold text-[#D6A64F]">0{index + 1}</span>
@@ -51,6 +53,7 @@ export function ProblemDiagnostics() {
               <h3 className="mt-6 font-[var(--font-manrope)] text-2xl font-extrabold">{item.title}</h3>
               <p className="mt-3 leading-7 text-[#465464]">{item.copy}</p>
             </article>
+            </ScrollReveal>
           ))}
         </div>
       </div>

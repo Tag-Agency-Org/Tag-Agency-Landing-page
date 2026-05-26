@@ -1,10 +1,11 @@
 import { ArrowRight } from "lucide-react";
+import { ScrollReveal } from "./ScrollReveal";
 
 export function CaseStudyEvidence() {
   return (
     <section id="results" className="section bg-[#101B27]">
       <div className="container grid gap-10 lg:grid-cols-[0.82fr_1.18fr]">
-        <div>
+        <ScrollReveal>
           <p className="eyebrow">Verified evidence only</p>
           <h2 className="mt-4 font-[var(--font-manrope)] text-4xl font-extrabold leading-tight md:text-5xl">
             Performance Should Be Measured, Not Assumed
@@ -16,7 +17,8 @@ export function CaseStudyEvidence() {
           <a href="#contact" className="button button-primary mt-8">
             Discuss a Similar Growth Challenge <ArrowRight size={18} />
           </a>
-        </div>
+        </ScrollReveal>
+        <ScrollReveal delay={0.08}>
         <article className="panel rounded-lg p-6 md:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
             <div>
@@ -55,6 +57,7 @@ export function CaseStudyEvidence() {
             </p>
           </div>
         </article>
+        </ScrollReveal>
       </div>
     </section>
   );

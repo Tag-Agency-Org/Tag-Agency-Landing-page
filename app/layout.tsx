@@ -49,6 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@type": "Organization",
     name: "TAG Agency",
     url: "https://www.tagagency.in/",
+    telephone: "+91 7411110987",
     address: {
       "@type": "PostalAddress",
       streetAddress: "#1117, 2nd Floor, 5th Gate, Manyata Tech Park",

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, Gauge, LineChart, Search, ShieldCheck } from "lucide-react";
+import { phoneHref } from "@/lib/site-data";
 
 export function HeroControlRoom() {
   const modules = ["Lead Quality Monitoring", "Creative Testing", "Search Intent Review", "Conversion Tracking"];
@@ -21,7 +22,7 @@ export function HeroControlRoom() {
             strategy through specialised Meta Ads, Google Ads and conversion-focused funnels.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#contact" className="button button-primary">
+            <a href={phoneHref} className="button button-primary" aria-label="Call TAG Agency to book a strategy call">
               Book a Strategy Call <ArrowRight size={18} />
             </a>
             <a href="#process" className="button button-secondary">
@@ -37,6 +38,7 @@ export function HeroControlRoom() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
+          whileHover={{ y: -4 }}
           className="panel relative rounded-lg p-4 sm:p-6"
           aria-label="Illustrative campaign signal overview"
         >
@@ -94,13 +96,23 @@ export function HeroControlRoom() {
               </div>
               <div className="flex h-32 items-end gap-2">
                 {[36, 52, 44, 68, 58, 78, 72, 88].map((height, index) => (
-                  <span
+                  <motion.span
                     key={index}
-                    className="flex-1 rounded-t bg-[#3E86F5]/80"
+                    className="origin-bottom flex-1 rounded-t bg-[#3E86F5]/80"
                     style={{ height: `${height}%`, opacity: 0.46 + index * 0.05 }}
+                    initial={{ scaleY: 0.4 }}
+                    animate={{ scaleY: [0.78, 1, 0.86] }}
+                    transition={{
+                      duration: 2.6,
+                      delay: index * 0.12,
+                      repeat: Infinity,
+                      repeatType: "mirror",
+                      ease: "easeInOut"
+                    }}
                   />
                 ))}
               </div>
+              <span className="signal-pulse mt-4 block h-px w-full origin-left bg-gradient-to-r from-transparent via-[#D6A64F] to-transparent" />
             </div>
           </div>
         </motion.div>

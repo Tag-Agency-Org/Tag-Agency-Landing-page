@@ -1,4 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
+import { ScrollReveal } from "./ScrollReveal";
 
 const services = [
   {
@@ -32,7 +33,7 @@ export function ServiceArchitecture() {
   return (
     <section id="services" className="section bg-[#09111A]">
       <div className="container">
-        <div className="max-w-3xl">
+        <ScrollReveal className="max-w-3xl">
           <p className="eyebrow">Performance architecture</p>
           <h2 className="mt-4 font-[var(--font-manrope)] text-4xl font-extrabold leading-tight md:text-5xl">
             Specialised Services Built Around Lead Generation
@@ -41,7 +42,7 @@ export function ServiceArchitecture() {
             We combine platform expertise with conversion thinking so advertising decisions are connected to the quality
             of opportunities your business receives.
           </p>
-        </div>
+        </ScrollReveal>
         <div className="mt-12 grid gap-5 lg:grid-cols-12">
           {services.slice(0, 2).map((service) => (
             <ServicePanel key={service.title} service={service} featured />
@@ -63,7 +64,8 @@ function ServicePanel({
   featured?: boolean;
 }) {
   return (
-    <article className={`panel rounded-lg p-6 ${featured ? "lg:col-span-6" : "lg:col-span-4"}`}>
+    <ScrollReveal className={featured ? "lg:col-span-6" : "lg:col-span-4"}>
+    <article className="panel h-full rounded-lg p-6">
       <div className="flex h-full flex-col">
         <span className="h-1 w-16 rounded-full bg-[#D6A64F]" />
         <h3 className="mt-6 font-[var(--font-manrope)] text-2xl font-extrabold">{service.title}</h3>
@@ -78,5 +80,6 @@ function ServicePanel({
         </ul>
       </div>
     </article>
+    </ScrollReveal>
   );
 }

@@ -18,13 +18,12 @@
 
 ## Assets Missing From Workspace
 
-- tag-logo-light.svg
-- tag-logo-dark.svg
+- tag-logo-light.svg and tag-logo-dark.svg remain missing, but the supplied agency logo has been copied into `public/assets/tag-agency/tag-agency-logo-cropped.png` and is now used on the site.
 - tag-favicon.png
 - hero-performance-dashboard.webp
 - hero-performance-dashboard-mobile.webp
 - hero-background-texture.webp
-- client-logo-01.svg through client-logo-12.svg
+- The supplied client logos have been copied into `public/assets/tag-agency/client-logo-01.png` through `client-logo-36.png` / `.jpg` and are now displayed on the site.
 - service-meta-ads.svg
 - service-google-ads.svg
 - service-lead-funnel.svg
@@ -41,6 +40,8 @@
 - tag-agency-team.webp
 - tag-agency-strategy-session.webp
 - contact-cta-background.webp
+- The supplied banner has been copied into `public/assets/tag-agency/hero-header-banner.jpeg` and displayed in the trust section.
+- The supplied Meta Business Partner badge has been copied into `public/assets/tag-agency/meta-business-partner-cropped.png` and displayed in the trust section.
 
 ## Information To Verify Before Publishing
 
@@ -60,6 +61,8 @@
 - UTM parameters, page URL, submitted date and referrer URL are captured.
 - Google Apps Script code is included at `docs/google-apps-script.js`.
 - Deployment instructions are included at `docs/form-integration.md`.
+- Main `Book a Strategy Call` CTAs use `tel:+917411110987` for smartphone dial-pad opening.
+- WhatsApp widget uses `https://wa.me/917411110987`.
 
 ## SEO and Accessibility Status
 
