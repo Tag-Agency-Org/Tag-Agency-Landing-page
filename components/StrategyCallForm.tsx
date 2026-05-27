@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -56,7 +57,7 @@ const requirementOptions = [
 export function StrategyCallForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [tracking, setTracking] = useState<Record<string, string>>({});
-  const endpoint = process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
+  const router = useRouter();
 
   const {
     register,
@@ -81,10 +82,6 @@ export function StrategyCallForm() {
 
   async function onSubmit(values: FormValues) {
     setStatus("idle");
-    if (!endpoint) {
-      setStatus("error");
-      return;
-    }
 
     const payload = {
       ...values,
@@ -93,10 +90,10 @@ export function StrategyCallForm() {
     };
 
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch("/api/leads", {
         method: "POST",
         headers: {
-          "Content-Type": "text/plain;charset=utf-8"
+          "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
       });
@@ -108,6 +105,7 @@ export function StrategyCallForm() {
 
       reset();
       setStatus("success");
+      router.push("/thank-you");
     } catch {
       setStatus("error");
     }

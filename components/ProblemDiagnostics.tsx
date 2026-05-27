@@ -1,4 +1,8 @@
-import { ArrowRight } from "lucide-react";
+"use client";
+
+import { ArrowRight, CornerDownLeft } from "lucide-react";
+import { motion } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { ScrollReveal } from "./ScrollReveal";
 
 const diagnostics = [
@@ -42,21 +46,77 @@ export function ProblemDiagnostics() {
             Talk to a Performance Strategist <ArrowRight size={18} />
           </a>
         </ScrollReveal>
-        <div className="grid gap-4 md:grid-cols-2">
+        <motion.div
+          className="diagnostic-flow grid gap-4 md:grid-cols-2"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.28 }}
+          variants={{
+            hidden: {},
+            visible: {
+              transition: {
+                staggerChildren: 0.22,
+                delayChildren: 0.12
+              }
+            }
+          }}
+        >
           {diagnostics.map((item, index) => (
-            <ScrollReveal key={item.title} delay={index * 0.06}>
-            <article className="light-panel rounded-md p-6">
+            <motion.article
+              key={item.title}
+              className="diagnostic-card light-panel rounded-md p-6"
+              variants={{
+                hidden: { opacity: 0, y: 26, scale: 0.97 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  transition: { duration: 0.52, ease: [0.22, 1, 0.36, 1] }
+                }
+              }}
+            >
               <div className="flex items-center justify-between border-b border-[#14202B]/10 pb-5">
                 <span className="text-xs font-extrabold tracking-[0.14em] text-[#3E86F5]">{item.label}</span>
                 <span className="font-[var(--font-manrope)] text-sm font-extrabold text-[#D6A64F]">0{index + 1}</span>
               </div>
               <h3 className="mt-6 font-[var(--font-manrope)] text-2xl font-extrabold">{item.title}</h3>
               <p className="mt-3 leading-7 text-[#465464]">{item.copy}</p>
-            </article>
-            </ScrollReveal>
+            </motion.article>
           ))}
-        </div>
+          <motion.span
+            className="diagnostic-flow-arrow diagnostic-flow-arrow-1"
+            aria-hidden="true"
+            variants={arrowVariants}
+          >
+            <ArrowRight size={22} />
+          </motion.span>
+          <motion.span
+            className="diagnostic-flow-arrow diagnostic-flow-arrow-2"
+            aria-hidden="true"
+            variants={arrowVariants}
+          >
+            <CornerDownLeft size={22} />
+          </motion.span>
+          <motion.span
+            className="diagnostic-flow-arrow diagnostic-flow-arrow-3"
+            aria-hidden="true"
+            variants={arrowVariants}
+          >
+            <ArrowRight size={22} />
+          </motion.span>
+        </motion.div>
       </div>
     </section>
   );
 }
+
+const easing = [0.22, 1, 0.36, 1] as const;
+
+const arrowVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.78 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.35, ease: easing, delay: 0.22 }
+  }
+};
