@@ -1,8 +1,9 @@
 # TAG Agency Lead Form Integration
 
-## Google Sheet
+## Gmail Inbox
 
-Create a Google Sheet named `Website Leads`, then open `Extensions > Apps Script` and paste the contents of `docs/google-apps-script.js`.
+Create a Google Apps Script project and paste the contents of `docs/google-apps-script-email.js`.
+Set `RECIPIENT_EMAIL` in that script to the Gmail inbox that should receive website leads.
 
 ## Deployment
 
@@ -14,13 +15,13 @@ Create a Google Sheet named `Website Leads`, then open `Extensions > Apps Script
 6. Add it to the website hosting environment:
 
 ```bash
-GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
+GOOGLE_APPS_SCRIPT_WEB_APP_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
 ```
 
 ## How the Live Site Works
 
-The public form submits to `/api/leads` on the same website domain. That server route forwards the lead to Google Apps Script using `GOOGLE_SCRIPT_URL`.
+The public form submits to `/api/leads` on the same website domain. That server route forwards the lead to Google Apps Script using `GOOGLE_APPS_SCRIPT_WEB_APP_URL`.
 
-This keeps the Google Apps Script URL out of the browser, avoids CORS issues, and works after hosting as long as the hosting provider has the `GOOGLE_SCRIPT_URL` environment variable configured.
+This keeps the Google Apps Script URL out of the browser, avoids CORS issues, and works after hosting as long as the hosting provider has the `GOOGLE_APPS_SCRIPT_WEB_APP_URL` environment variable configured.
 
 For local testing, create `.env.local` with the same variable and restart the dev server.

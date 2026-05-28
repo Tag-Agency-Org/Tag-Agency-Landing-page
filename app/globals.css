@@ -18,14 +18,18 @@
 }
 
 html {
+  min-height: 100%;
+  overflow-y: auto;
   scroll-behavior: smooth;
 }
 
 body {
+  min-height: 100%;
   margin: 0;
   background: var(--bg-primary);
   color: var(--text-light);
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 button,
@@ -215,6 +219,14 @@ a {
 
 .signal-pulse {
   animation: signalPulse 2.8s ease-in-out infinite;
+}
+
+.strategy-popup-form #contact {
+  padding: 0;
+}
+
+.strategy-popup-form #contact > .container {
+  width: 100%;
 }
 
 .typing-caret {
@@ -485,6 +497,46 @@ a {
 
   .container {
     width: min(100% - 24px, 1280px);
+  }
+
+  .button {
+    width: 100%;
+    min-height: 46px;
+    padding-inline: 16px;
+    text-align: center;
+  }
+
+  .panel:hover,
+  .light-panel:hover,
+  .logo-tile:hover,
+  .trust-signal-box:hover {
+    transform: none;
+  }
+
+  .logo-tile {
+    flex-basis: 124px;
+    height: 84px;
+    padding: 16px;
+  }
+
+  .strategy-popup-form #contact > .container {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .strategy-popup-form #contact .panel {
+    display: none;
+  }
+
+  .strategy-popup-form form {
+    border-radius: 0;
+    padding: 20px 14px 18px;
+  }
+
+  .strategy-popup-form form h3 {
+    padding-right: 44px;
+    font-size: 1.65rem;
+    line-height: 1.15;
   }
 
   .diagnostic-card:not(:last-of-type)::after {

@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 const requiredFields = ["fullName", "phone", "email", "consent"] as const;
 
 export async function POST(request: Request) {
-  const googleScriptUrl = process.env.GOOGLE_SCRIPT_URL || process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
+  // Keep the Apps Script endpoint on the server so it is not exposed in browser bundles.
+  const googleScriptUrl = process.env.GOOGLE_APPS_SCRIPT_WEB_APP_URL || process.env.GOOGLE_SCRIPT_URL;
 
   if (!googleScriptUrl) {
     return NextResponse.json({ success: false, message: "Lead capture endpoint is not configured" }, { status: 500 });
@@ -33,13 +34,13 @@ export async function POST(request: Request) {
     const data = await response.json().catch(() => null);
     if (!response.ok || data?.success === false) {
       return NextResponse.json(
-        { success: false, message: "Google Sheet rejected the lead", detail: data },
+        { success: false, message: "Google Apps Script rejected the lead", detail: data },
         { status: 502 }
       );
     }
 
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ success: false, message: "Could not forward lead to Google Sheet" }, { status: 502 });
+    return NextResponse.json({ success: false, message: "Could not forward lead to Google Apps Script" }, { status: 502 });
   }
 }

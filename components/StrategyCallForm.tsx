@@ -2,10 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { thankYouRedirectUrl } from "@/lib/site-data";
 import { ScrollReveal } from "./ScrollReveal";
 import { TypingHeadline } from "./TypingHeadline";
 
@@ -57,7 +57,6 @@ const requirementOptions = [
 export function StrategyCallForm() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [tracking, setTracking] = useState<Record<string, string>>({});
-  const router = useRouter();
 
   const {
     register,
@@ -105,7 +104,7 @@ export function StrategyCallForm() {
 
       reset();
       setStatus("success");
-      router.push("/thank-you");
+      window.location.href = thankYouRedirectUrl;
     } catch {
       setStatus("error");
     }

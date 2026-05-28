@@ -8,12 +8,12 @@ type Props = {
 };
 
 const industries = [
-  ["Real Estate", "industry-real-estate.webp", "Generate location-focused enquiries for plots, apartments, projects and site visits through structured targeting and conversion journeys."],
-  ["Automobile Dealerships", "industry-automobile.webp", "Capture buyer intent for vehicle enquiries, test drives and local dealership opportunities."],
-  ["Education", "industry-education.webp", "Connect prospective students and parents with course, admission and counselling opportunities."],
-  ["Healthcare and Wellness", "industry-healthcare.webp", "Create responsible, trust-led enquiry pathways for services that require careful decision making."],
-  ["Consumer Brands", "industry-consumer-brand.webp", "Support product discovery and purchase intent through campaign creatives and measurable customer journeys."],
-  ["Local and Regional Businesses", "industry-local-business.webp", "Help businesses reach the right audience in the right geography with focused lead-generation campaigns."]
+  ["Real Estate", "industry-real-estate.jpeg", "Generate location-focused enquiries for plots, apartments, projects and site visits through structured targeting and conversion journeys."],
+  ["Automobile Dealerships", "industry-automobile.jpeg", "Capture buyer intent for vehicle enquiries, test drives and local dealership opportunities."],
+  ["Education", "industry-education.jpeg", "Connect prospective students and parents with course, admission and counselling opportunities."],
+  ["Healthcare and Wellness", "industry-healthcare.jpeg", "Create responsible, trust-led enquiry pathways for services that require careful decision making."],
+  ["Consumer Brands", "industry-consumer-brand.jpeg", "Support product discovery and purchase intent through campaign creatives and measurable customer journeys."],
+  ["Local and Regional Businesses", "industry-local-business.jpeg", "Help businesses reach the right audience in the right geography with focused lead-generation campaigns."]
 ];
 
 export function IndustryUseCases({ assets }: Props) {
@@ -34,7 +34,7 @@ export function IndustryUseCases({ assets }: Props) {
           {industries.map(([title, filename, copy], index) => (
             <ScrollReveal key={title} delay={index * 0.04}>
             <article className="h-full overflow-hidden rounded-md border border-[#14202B]/12 bg-white transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="relative aspect-[16/10]">
+              <div className="relative aspect-[5/4] bg-[#F7F5F0]">
                 {assets[filename] ? (
                   <Image src={`/assets/tag-agency/${filename}`} alt={`${title} lead generation use case`} fill className="object-cover" />
                 ) : (

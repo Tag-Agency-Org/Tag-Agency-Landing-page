@@ -6,8 +6,11 @@ import { IndustryUseCases } from "@/components/IndustryUseCases";
 import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 import { ProblemDiagnostics } from "@/components/ProblemDiagnostics";
 import { ProcessTimeline } from "@/components/ProcessTimeline";
+import { RealEstateResults } from "@/components/RealEstateResults";
 import { ServiceArchitecture } from "@/components/ServiceArchitecture";
 import { StrategyCallForm } from "@/components/StrategyCallForm";
+import { StrategyCallPopup } from "@/components/StrategyCallPopup";
+import { TeamPhotoSection } from "@/components/TeamPhotoSection";
 import { TrustSignalStrip } from "@/components/TrustSignalStrip";
 import { WhyTagAgency } from "@/components/WhyTagAgency";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
@@ -22,10 +25,12 @@ export default function Home() {
       <Header hasLogo={assets["tag-agency-logo-cropped.png"]} />
       <main>
         <HeroControlRoom />
+        <RealEstateResults />
         <TrustSignalStrip assets={assets} />
         <ProblemDiagnostics />
         <ServiceArchitecture />
         <ProcessTimeline />
+        <TeamPhotoSection assets={assets} />
         <IndustryUseCases assets={assets} />
         <WhyTagAgency />
         <AgencyFocus assets={assets} />
@@ -34,6 +39,7 @@ export default function Home() {
       <Footer hasLogo={assets["tag-agency-logo-cropped.png"]} />
       <MobileStickyCTA />
       <WhatsAppWidget />
+      <StrategyCallPopup />
     </>
   );
 }

@@ -9,4 +9,6 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 server.*.log
+tsconfig.tsbuildinfo
 qa-screenshots/
+Creative assets/

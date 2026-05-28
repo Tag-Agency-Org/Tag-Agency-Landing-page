@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
+import { googleAdsId, googleAnalyticsId, leadSiteUrl, metaPixelId } from "@/lib/site-data";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
   title: "TAG Agency | Meta Ads and Google Ads Lead Generation Agency",
   description:
     "TAG Agency helps businesses generate qualified leads through specialised Meta Ads, Google Ads and conversion-focused digital marketing strategies.",
-  metadataBase: new URL("https://www.tagagency.in"),
+  metadataBase: new URL(leadSiteUrl),
   alternates: {
     canonical: "/"
   },
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
     title: "TAG Agency | Meta Ads and Google Ads Lead Generation Agency",
     description:
       "TAG Agency helps businesses generate qualified leads through specialised Meta Ads, Google Ads and conversion-focused digital marketing strategies.",
-    url: "https://www.tagagency.in/",
+    url: leadSiteUrl,
     siteName: "TAG Agency",
     images: [
       {
@@ -48,7 +49,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "TAG Agency",
-    url: "https://www.tagagency.in/",
+    url: leadSiteUrl,
     telephone: "+91 7411110987",
     address: {
       "@type": "PostalAddress",
@@ -63,6 +64,47 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   return (
     <html lang="en-IN" className={`${inter.variable} ${manrope.variable}`}>
+      <head>
+        {/* One Google tag loader configures both Ads and Analytics IDs site-wide. */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${googleAdsId}');
+              gtag('config', '${googleAnalyticsId}');
+            `
+          }}
+        />
+        {/* Base Meta Pixel, installed globally so every page view is tracked once. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${metaPixelId}');
+              fbq('track', 'PageView');
+            `
+          }}
+        />
+        <noscript>
+          <img
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+            alt=""
+          />
+        </noscript>
+      </head>
       <body style={{ fontFamily: "var(--font-inter)" }}>
         <script
           type="application/ld+json"

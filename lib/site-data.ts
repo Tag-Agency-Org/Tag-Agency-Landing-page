@@ -10,6 +10,7 @@ export const assetFilenames = [
   "hero-performance-dashboard.webp",
   "hero-performance-dashboard-mobile.webp",
   "hero-background-texture.webp",
+  "tag-agency-team-photo.jpeg",
   "client-logo-01.svg",
   "client-logo-02.svg",
   "client-logo-03.svg",
@@ -29,12 +30,12 @@ export const assetFilenames = [
   "service-creative-production.svg",
   "case-study-featured.webp",
   "case-study-metrics-dashboard.webp",
-  "industry-real-estate.webp",
-  "industry-automobile.webp",
-  "industry-education.webp",
-  "industry-healthcare.webp",
-  "industry-consumer-brand.webp",
-  "industry-local-business.webp",
+  "industry-real-estate.jpeg",
+  "industry-automobile.jpeg",
+  "industry-education.jpeg",
+  "industry-healthcare.jpeg",
+  "industry-consumer-brand.jpeg",
+  "industry-local-business.jpeg",
   "tag-agency-team.webp",
   "tag-agency-strategy-session.webp",
   "contact-cta-background.webp"
@@ -82,6 +83,14 @@ export const suppliedClientLogoFiles = [
 export const phoneNumber = "7411110987";
 export const phoneHref = "tel:+917411110987";
 export const whatsAppHref = "https://wa.me/917411110987";
+export const leadSiteUrl = "https://www.leads.tagagency.in/";
+export const thankYouRedirectUrl = "https://www.tagagency.in/leads-enquriy/";
+export const facebookProfileUrl = "https://www.facebook.com/tagagency0";
+export const instagramProfileUrl = "https://www.instagram.com/tagagency.in?igsh=MWE0b2Q2Z2U4ZjZxbQ==";
+
+export const googleAdsId = "AW-18159720115";
+export const googleAnalyticsId = "G-M2H0B2WHVD";
+export const metaPixelId = "1548511863281177";
 
 export const missingVerificationItems = [
   "Case study numbers and spend formatting",
