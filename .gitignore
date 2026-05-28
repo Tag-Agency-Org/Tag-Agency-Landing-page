@@ -11,6 +11,3 @@ pnpm-debug.log*
 server.*.log
 tsconfig.tsbuildinfo
 qa-screenshots/
-Creative assets/*
-!Creative assets/Clients logos/
-!Creative assets/Clients logos/*
