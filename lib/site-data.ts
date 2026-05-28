@@ -77,7 +77,11 @@ export const suppliedClientLogoFiles = [
   "client-logo-33.jpg",
   "client-logo-34.png",
   "client-logo-35.png",
-  "client-logo-36.png"
+  "client-logo-36.png",
+  "client-logo-37.png",
+  "client-logo-38.png",
+  "client-logo-39.jpg",
+  "client-logo-40.png"
 ];
 
 export const phoneNumber = "7411110987";

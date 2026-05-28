@@ -9,7 +9,6 @@ const navItems = [
   ["Services", "#services"],
   ["Our Process", "#process"],
   ["Results", "#results"],
-  ["Industries", "#industries"],
   ["About", "#about"],
   ["Contact", "#contact"]
 ];

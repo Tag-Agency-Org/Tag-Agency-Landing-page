@@ -2,7 +2,6 @@ import { AgencyFocus } from "@/components/AgencyFocus";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { HeroControlRoom } from "@/components/HeroControlRoom";
-import { IndustryUseCases } from "@/components/IndustryUseCases";
 import { MobileStickyCTA } from "@/components/MobileStickyCTA";
 import { ProblemDiagnostics } from "@/components/ProblemDiagnostics";
 import { ProcessTimeline } from "@/components/ProcessTimeline";
@@ -31,7 +30,6 @@ export default function Home() {
         <ServiceArchitecture />
         <ProcessTimeline />
         <TeamPhotoSection assets={assets} />
-        <IndustryUseCases assets={assets} />
         <WhyTagAgency />
         <AgencyFocus assets={assets} />
         <StrategyCallForm />
