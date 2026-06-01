@@ -29,7 +29,7 @@ export default function Home() {
         <ProblemDiagnostics />
         <ServiceArchitecture />
         <ProcessTimeline />
-        <TeamPhotoSection assets={assets} />
+        <TeamPhotoSection />
         <WhyTagAgency />
         <AgencyFocus assets={assets} />
         <StrategyCallForm />

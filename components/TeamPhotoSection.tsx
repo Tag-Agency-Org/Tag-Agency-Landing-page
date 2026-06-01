@@ -1,14 +1,9 @@
 import Image from "next/image";
-import { MissingAssetPlaceholder } from "./MissingAssetPlaceholder";
 import { ScrollReveal } from "./ScrollReveal";
 
-type Props = {
-  assets: Record<string, boolean>;
-};
+const teamPhotoPath = "/team-image.jpeg";
 
-const teamPhoto = "tag-agency-team-photo.jpeg";
-
-export function TeamPhotoSection({ assets }: Props) {
+export function TeamPhotoSection() {
   return (
     <section id="team" className="section bg-[#101B27] text-[#F5F3EE]">
       <div className="container">
@@ -20,18 +15,14 @@ export function TeamPhotoSection({ assets }: Props) {
         </ScrollReveal>
         <ScrollReveal delay={0.08} className="mt-10 overflow-hidden rounded-lg border border-white/12 bg-[#09111A] shadow-2xl">
           <div className="relative aspect-[12/5] min-h-[150px] bg-[#09111A] md:min-h-[240px]">
-            {assets[teamPhoto] ? (
-              <Image
-                src={`/assets/tag-agency/${teamPhoto}`}
-                alt="TAG Agency team"
-                fill
-                sizes="(min-width: 1280px) 1180px, 100vw"
-                className="object-contain md:object-cover"
-                priority={false}
-              />
-            ) : (
-              <MissingAssetPlaceholder filename={teamPhoto} tone="dark" label="Team photo pending" />
-            )}
+            <Image
+              src={teamPhotoPath}
+              alt="TAG Agency team"
+              fill
+              sizes="(min-width: 1280px) 1180px, 100vw"
+              className="object-contain md:object-cover"
+              priority={false}
+            />
           </div>
         </ScrollReveal>
       </div>
