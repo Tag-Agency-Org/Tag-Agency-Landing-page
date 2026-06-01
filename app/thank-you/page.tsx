@@ -16,7 +16,7 @@ export default function ThankYouPage() {
 
   return (
     <>
-      <Header hasLogo={assets["tag-agency-logo-cropped.png"]} />
+      <Header />
       <main className="min-h-screen bg-[#09111A] pt-20">
         <section className="section">
           <div className="container grid gap-10 lg:grid-cols-[0.88fr_0.72fr] lg:items-center">

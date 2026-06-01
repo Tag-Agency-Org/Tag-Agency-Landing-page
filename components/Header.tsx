@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { phoneHref } from "@/lib/site-data";
@@ -13,11 +12,7 @@ const navItems = [
   ["Contact", "#contact"]
 ];
 
-type Props = {
-  hasLogo: boolean;
-};
-
-export function Header({ hasLogo }: Props) {
+export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -35,21 +30,16 @@ export function Header({ hasLogo }: Props) {
       }`}
     >
       <div className="container flex h-20 items-center justify-between gap-6">
-        <a href="#top" className="flex min-w-[132px] items-center" aria-label="TAG Agency home">
-          {hasLogo ? (
-            <span className="flex h-12 w-36 items-center justify-center rounded-md bg-[#F7F5F0] px-3">
-              <Image
-                src="/assets/tag-agency/tag-agency-logo-cropped.png"
-                alt="TAG Agency"
-                width={180}
-                height={44}
-                priority
-                className="max-h-9 w-auto object-contain"
-              />
-            </span>
-          ) : (
-            <span className="font-[var(--font-manrope)] text-xl font-extrabold tracking-wide">TAG Agency</span>
-          )}
+        <a href="#top" className="flex min-w-[150px] items-center" aria-label="TAG Agency home">
+          <span className="flex h-12 w-40 items-center justify-center rounded-md bg-[#F7F5F0] px-3 sm:w-44">
+            <img
+              src="/logo.png"
+              alt="TAG Agency"
+              width={706}
+              height={175}
+              className="block h-auto max-h-10 w-auto max-w-full object-contain sm:max-h-11"
+            />
+          </span>
         </a>
         <nav className="nav-dock hidden items-center gap-2 text-sm font-semibold text-[#AFBAC7] lg:flex" aria-label="Primary">
           {navItems.map(([label, href]) => (

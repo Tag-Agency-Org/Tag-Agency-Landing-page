@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <>
-      <Header hasLogo={assets["tag-agency-logo-cropped.png"]} />
+      <Header />
       <main>
         <HeroControlRoom />
         <RealEstateResults />
