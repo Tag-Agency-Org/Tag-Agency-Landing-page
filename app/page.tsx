@@ -14,10 +14,12 @@ import { TrustSignalStrip } from "@/components/TrustSignalStrip";
 import { WhyTagAgency } from "@/components/WhyTagAgency";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 import { collectAssetStatus } from "@/lib/assets";
-import { assetFilenames, suppliedClientLogoFiles } from "@/lib/site-data";
+import { getClientLogos } from "@/lib/client-logos";
+import { assetFilenames } from "@/lib/site-data";
 
 export default function Home() {
-  const assets = collectAssetStatus([...assetFilenames, ...suppliedClientLogoFiles]);
+  const assets = collectAssetStatus(assetFilenames);
+  const clientLogos = getClientLogos();
 
   return (
     <>
@@ -25,7 +27,7 @@ export default function Home() {
       <main>
         <HeroControlRoom />
         <RealEstateResults />
-        <TrustSignalStrip assets={assets} />
+        <TrustSignalStrip logos={clientLogos} />
         <ProblemDiagnostics />
         <ServiceArchitecture />
         <ProcessTimeline />

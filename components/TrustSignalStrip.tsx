@@ -1,15 +1,11 @@
-import Image from "next/image";
-import { suppliedClientLogoFiles } from "@/lib/site-data";
+import type { ClientLogo } from "@/lib/client-logos";
 import { ScrollReveal } from "./ScrollReveal";
 
 type Props = {
-  assets: Record<string, boolean>;
+  logos: ClientLogo[];
 };
 
-export function TrustSignalStrip({ assets }: Props) {
-  const logos = suppliedClientLogoFiles.filter((filename) => assets[filename]);
-  const logoRows = [logos, logos, logos];
-
+export function TrustSignalStrip({ logos }: Props) {
   return (
     <section className="border-y border-white/10 bg-[#101B27] py-12">
       <div className="container">
@@ -17,38 +13,31 @@ export function TrustSignalStrip({ assets }: Props) {
           <h2 className="font-[var(--font-manrope)] text-3xl font-extrabold text-[#F5F3EE] md:text-4xl">
             Our Clients
           </h2>
-          {logos.length ? (
-            <div className="mt-5 grid gap-4" aria-label="TAG Agency client logo showcase">
-              {logoRows.map((row, rowIndex) => (
-                <div key={rowIndex} className="logo-marquee">
-                  <div className={`logo-marquee-track ${rowIndex === 1 ? "reverse" : ""}`}>
-                    {[...row, ...row].map((logo, index) => (
-                      <LogoTile key={`${rowIndex}-${logo}-${index}`} logo={logo} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="mt-4 rounded-md border border-white/10 bg-white/[0.03] p-5 text-sm text-[#AFBAC7]">
-              Approved client logos are pending. No client logos are displayed until supplied and approved.
-            </p>
-          )}
+          <div
+            className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
+            aria-label="TAG Agency client logo showcase"
+          >
+            {logos.map((logo) => (
+              <LogoTile key={logo.filename} logo={logo} />
+            ))}
+          </div>
         </ScrollReveal>
       </div>
     </section>
   );
 }
 
-function LogoTile({ logo }: { logo: string }) {
+function LogoTile({ logo }: { logo: ClientLogo }) {
   return (
     <div className="logo-tile flex h-24 items-center justify-center rounded-md border border-white/10 bg-white p-5">
-      <Image
-        src={`/assets/tag-agency/${logo}`}
-        alt="TAG Agency client logo"
+      <img
+        src={`/client-logos/${logo.filename}`}
+        alt={logo.alt}
         width={150}
         height={70}
-        className="max-h-16 w-auto object-contain"
+        loading="lazy"
+        decoding="async"
+        className="h-auto max-h-16 w-auto max-w-full object-contain"
       />
     </div>
   );
