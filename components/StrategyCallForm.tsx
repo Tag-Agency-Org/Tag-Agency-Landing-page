@@ -2,7 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -55,7 +54,6 @@ const requirementOptions = [
 ];
 
 export function StrategyCallForm() {
-  const router = useRouter();
   const [tracking, setTracking] = useState<Record<string, string>>({});
 
   const {
@@ -86,23 +84,34 @@ export function StrategyCallForm() {
       consent: values.consent ? "Yes" : "No"
     };
 
+    let timeout: number | undefined;
+
     try {
-      void fetch("/api/leads", {
+      const controller = new AbortController();
+      timeout = window.setTimeout(() => controller.abort(), 5000);
+
+      console.info("Submitting lead request to /api/leads");
+      const response = await fetch("/api/leads", {
         method: "POST",
-        keepalive: true,
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload)
-      }).catch((error) => {
-        console.error("Lead submission failed:", error);
+        body: JSON.stringify(payload),
+        signal: controller.signal
       });
 
+      console.info("Lead request completed before redirect", {
+        ok: response.ok,
+        status: response.status
+      });
       reset();
     } catch (error) {
-      console.error("Lead submission failed:", error);
+      console.error("Lead submission failed before redirect:", error);
     } finally {
-      router.push("/thank-you");
+      if (timeout !== undefined) {
+        window.clearTimeout(timeout);
+      }
+      window.location.assign("/thank-you");
     }
   }
 
