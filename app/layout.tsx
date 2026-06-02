@@ -75,6 +75,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               gtag('js', new Date());
 
               gtag('config', 'AW-18159720115');
+
+              if (window.location.pathname === '/thank-you' || window.location.pathname === '/thank-you/') {
+                gtag('event', 'conversion', {
+                  'send_to': 'AW-18159720115/0MROCIHR3LccELOtndND',
+                  'value': 1.0,
+                  'currency': 'INR'
+                });
+              }
             `
           }}
         />
