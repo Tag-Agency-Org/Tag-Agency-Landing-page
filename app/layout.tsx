@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
-import { googleAdsId, googleAnalyticsId, leadSiteUrl, metaPixelId } from "@/lib/site-data";
+import { leadSiteUrl, metaPixelId } from "@/lib/site-data";
 import "./globals.css";
 
 const inter = Inter({
@@ -65,19 +65,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en-IN" className={`${inter.variable} ${manrope.variable}`}>
       <head>
-        {/* One Google tag loader configures both Ads and Analytics IDs site-wide. */}
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${googleAdsId}`} />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', '${googleAdsId}');
-              gtag('config', '${googleAnalyticsId}');
-            `
-          }}
-        />
         {/* Base Meta Pixel, installed globally so every page view is tracked once. */}
         <script
           dangerouslySetInnerHTML={{
