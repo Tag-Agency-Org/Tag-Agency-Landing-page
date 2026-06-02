@@ -6,6 +6,8 @@ type Props = {
 };
 
 export function TrustSignalStrip({ logos }: Props) {
+  const logoRows = [logos, logos, logos];
+
   return (
     <section className="border-y border-white/10 bg-[#101B27] py-12">
       <div className="container">
@@ -13,12 +15,15 @@ export function TrustSignalStrip({ logos }: Props) {
           <h2 className="font-[var(--font-manrope)] text-3xl font-extrabold text-[#F5F3EE] md:text-4xl">
             Our Clients
           </h2>
-          <div
-            className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6"
-            aria-label="TAG Agency client logo showcase"
-          >
-            {logos.map((logo) => (
-              <LogoTile key={logo.filename} logo={logo} />
+          <div className="mt-5 grid gap-4" aria-label="TAG Agency client logo showcase">
+            {logoRows.map((row, rowIndex) => (
+              <div key={rowIndex} className="logo-marquee">
+                <div className={`logo-marquee-track ${rowIndex === 1 ? "reverse" : ""}`}>
+                  {[...row, ...row].map((logo, index) => (
+                    <LogoTile key={`${rowIndex}-${logo.filename}-${index}`} logo={logo} />
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </ScrollReveal>
