@@ -2,10 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { thankYouRedirectUrl } from "@/lib/site-data";
 import { ScrollReveal } from "./ScrollReveal";
 import { TypingHeadline } from "./TypingHeadline";
 
@@ -55,7 +55,7 @@ const requirementOptions = [
 ];
 
 export function StrategyCallForm() {
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const router = useRouter();
   const [tracking, setTracking] = useState<Record<string, string>>({});
 
   const {
@@ -80,8 +80,6 @@ export function StrategyCallForm() {
   }, []);
 
   async function onSubmit(values: FormValues) {
-    setStatus("idle");
-
     const payload = {
       ...values,
       ...tracking,
@@ -89,24 +87,22 @@ export function StrategyCallForm() {
     };
 
     try {
-      const response = await fetch("/api/leads", {
+      void fetch("/api/leads", {
         method: "POST",
+        keepalive: true,
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
+      }).catch((error) => {
+        console.error("Lead submission failed:", error);
       });
 
-      const data = await response.json().catch(() => null);
-      if (!response.ok || data?.success === false) {
-        throw new Error("Lead submission failed");
-      }
-
       reset();
-      setStatus("success");
-      window.location.href = thankYouRedirectUrl;
-    } catch {
-      setStatus("error");
+    } catch (error) {
+      console.error("Lead submission failed:", error);
+    } finally {
+      router.push("/thank-you");
     }
   }
 
@@ -196,14 +192,7 @@ export function StrategyCallForm() {
           <p className="mt-3 text-center text-xs text-[#465464]">
             Your information is kept private and used only to respond to your enquiry.
           </p>
-          <div className="mt-4 min-h-6 text-center text-sm font-bold" aria-live="polite">
-            {status === "success" ? (
-              <p className="text-[#269B71]">Thank you. Your enquiry has been received. Our team will contact you shortly.</p>
-            ) : null}
-            {status === "error" ? (
-              <p className="text-[#C35A4A]">We could not submit your enquiry right now. Please review your details and try again.</p>
-            ) : null}
-          </div>
+          <div className="mt-4 min-h-6 text-center text-sm font-bold" aria-live="polite" />
         </form>
         </ScrollReveal>
       </div>

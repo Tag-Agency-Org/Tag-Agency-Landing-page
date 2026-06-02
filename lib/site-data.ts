@@ -87,8 +87,8 @@ export const suppliedClientLogoFiles = [
 export const phoneNumber = "7411110987";
 export const phoneHref = "tel:+917411110987";
 export const whatsAppHref = "https://wa.me/917411110987";
-export const leadSiteUrl = "https://www.leads.tagagency.in/";
-export const thankYouRedirectUrl = "https://www.tagagency.in/leads-enquriy/";
+export const leadSiteUrl = "https://tag-agency-landing-page.tagagencycreative0.workers.dev/";
+export const thankYouRedirectUrl = "/thank-you";
 export const facebookProfileUrl = "https://www.facebook.com/tagagency0";
 export const instagramProfileUrl = "https://www.instagram.com/tagagency.in?igsh=MWE0b2Q2Z2U4ZjZxbQ==";
 

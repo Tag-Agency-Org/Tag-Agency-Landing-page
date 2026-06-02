@@ -20,8 +20,16 @@ GOOGLE_APPS_SCRIPT_WEB_APP_URL=https://script.google.com/macros/s/YOUR_DEPLOYMEN
 
 ## How the Live Site Works
 
-The public form submits to `/api/leads` on the same website domain. That server route forwards the lead to Google Apps Script using `GOOGLE_APPS_SCRIPT_WEB_APP_URL`.
+The public form submits to `/api/leads` on the same website domain, including the current Cloudflare default domain:
+
+```text
+https://tag-agency-landing-page.tagagencycreative0.workers.dev
+```
+
+That server route forwards the lead to Google Apps Script using `GOOGLE_APPS_SCRIPT_WEB_APP_URL`.
 
 This keeps the Google Apps Script URL out of the browser, avoids CORS issues, and works after hosting as long as the hosting provider has the `GOOGLE_APPS_SCRIPT_WEB_APP_URL` environment variable configured.
+
+Use the deployed Apps Script Web App URL ending in `/exec` for production. Do not use a `/dev` Apps Script URL in Cloudflare.
 
 For local testing, create `.env.local` with the same variable and restart the dev server.

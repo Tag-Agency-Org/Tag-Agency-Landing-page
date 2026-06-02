@@ -31,8 +31,11 @@ export async function POST(request: Request) {
       body: JSON.stringify(payload)
     });
 
-    const data = await response.json().catch(() => null);
+    const responseText = await response.text();
+    const data = responseText ? parseJsonResponse(responseText) : null;
+
     if (!response.ok || data?.success === false) {
+      console.error("Lead submission failed:", data || responseText || response.statusText);
       return NextResponse.json(
         { success: false, message: "Google Apps Script rejected the lead", detail: data },
         { status: 502 }
@@ -40,7 +43,16 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json({ success: true });
-  } catch {
+  } catch (error) {
+    console.error("Lead submission failed:", error);
     return NextResponse.json({ success: false, message: "Could not forward lead to Google Apps Script" }, { status: 502 });
+  }
+}
+
+function parseJsonResponse(responseText: string) {
+  try {
+    return JSON.parse(responseText) as { success?: boolean };
+  } catch {
+    return null;
   }
 }
