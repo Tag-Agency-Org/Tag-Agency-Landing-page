@@ -14,12 +14,11 @@ import { TrustSignalStrip } from "@/components/TrustSignalStrip";
 import { WhyTagAgency } from "@/components/WhyTagAgency";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
 import { collectAssetStatus } from "@/lib/assets";
-import { getClientLogos } from "@/lib/client-logos";
+import { clientLogos } from "@/lib/client-logos";
 import { assetFilenames } from "@/lib/site-data";
 
 export default function Home() {
   const assets = collectAssetStatus(assetFilenames);
-  const clientLogos = getClientLogos();
 
   return (
     <>

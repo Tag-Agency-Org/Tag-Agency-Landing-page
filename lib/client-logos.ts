@@ -1,48 +1,47 @@
-import { readdirSync } from "node:fs";
-import path from "node:path";
-
 export type ClientLogo = {
   filename: string;
   alt: string;
 };
 
-const clientLogoRoot = path.join(process.cwd(), "public", "client-logos");
-const imageExtensionPattern = /\.(png|jpe?g|webp|svg)$/i;
-const acronymWords = new Set(["bm", "ds", "kia", "rp", "svt", "tvs"]);
-
-function toTitleWord(word: string) {
-  if (acronymWords.has(word)) {
-    return word.toUpperCase();
-  }
-
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
-
-function altTextFromFilename(filename: string) {
-  const stem = filename
-    .replace(imageExtensionPattern, "")
-    .replace(/^client-logo-\d+-/, "")
-    .replace(/^\d+-/, "");
-
-  const label = stem
-    .split("-")
-    .filter(Boolean)
-    .map(toTitleWord)
-    .join(" ");
-
-  return `${label || "Client"} client logo`;
-}
-
-export function getClientLogos(): ClientLogo[] {
-  try {
-    return readdirSync(clientLogoRoot)
-      .filter((filename) => imageExtensionPattern.test(filename))
-      .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-      .map((filename) => ({
-        filename,
-        alt: altTextFromFilename(filename)
-      }));
-  } catch {
-    return [];
-  }
-}
+export const clientLogos: ClientLogo[] = [
+  { filename: "client-logo-01-01-defyne-logo.png", alt: "Defyne Logo client logo" },
+  { filename: "client-logo-02-02-logo.png", alt: "Logo client logo" },
+  { filename: "client-logo-03-logo-1.png", alt: "Logo 1 client logo" },
+  { filename: "client-logo-04-117642342-101867558301494-3843599290179686223-n.png", alt: "Client logo 04" },
+  { filename: "client-logo-05-logo-31.png", alt: "Logo 31 client logo" },
+  { filename: "client-logo-06-539572479-17847671184550989-8172312588935696617-n.png", alt: "Client logo 06" },
+  { filename: "client-logo-07-bhat-bhat-logo.png", alt: "Bhat Bhat client logo" },
+  { filename: "client-logo-08-ds-max.jpg", alt: "DS Max client logo" },
+  { filename: "client-logo-09-group-1-copy-5.png", alt: "Dermatix client logo" },
+  { filename: "client-logo-10-group-1-copy-6.png", alt: "Medical Doctors client logo" },
+  { filename: "client-logo-11-group-1-copy-7.png", alt: "Hot Track Moto Corp client logo" },
+  { filename: "client-logo-12-group-5.png", alt: "Emergency services client logo" },
+  { filename: "client-logo-13-group-6.png", alt: "World Square client logo" },
+  { filename: "client-logo-14-group-7.png", alt: "Jewellery client logo" },
+  { filename: "client-logo-15-hyundai-emblem.png", alt: "Hyundai client logo" },
+  { filename: "client-logo-16-img-20230413-wa0019-copy.png", alt: "Moon Maternity client logo" },
+  { filename: "client-logo-17-kia-4.png", alt: "Kia client logo" },
+  { filename: "client-logo-18-koravi-green-city-logo.png", alt: "Koravi Green City client logo" },
+  { filename: "client-logo-19-layer-6.png", alt: "Bhandari College client logo" },
+  { filename: "client-logo-20-layer-7.png", alt: "BM Royal Garden client logo" },
+  { filename: "client-logo-21-layer-9.png", alt: "Panchamrutha client logo" },
+  { filename: "client-logo-22-logo-png.png", alt: "Aadigi International School client logo" },
+  { filename: "client-logo-23-logo.png", alt: "Client logo" },
+  { filename: "client-logo-24-logo-1.png", alt: "Client logo 1" },
+  { filename: "client-logo-25-logo-2.png", alt: "Client logo 2" },
+  { filename: "client-logo-26-marvel-logo.png", alt: "Marvel client logo" },
+  { filename: "client-logo-27-newgen-home-profile-all-projects-8-1-1.png", alt: "Newgen Homes client logo" },
+  { filename: "client-logo-28-nissan-automotive-brand-logo-gcfu8m53losfzum1.png", alt: "Nissan client logo" },
+  { filename: "client-logo-29-png-transparent-honda-logo-car-motorcycle-honda-angle-text-logo.png", alt: "Honda client logo" },
+  { filename: "client-logo-30-pngwing-com-1.png", alt: "Royal Enfield client logo" },
+  { filename: "client-logo-31-purvankara.png", alt: "Purvankara client logo" },
+  { filename: "client-logo-32-raja.png", alt: "Raja client logo" },
+  { filename: "client-logo-33-rp-logo.png", alt: "RP client logo" },
+  { filename: "client-logo-34-s-c-shettar-r-logo.png", alt: "S C Shettar client logo" },
+  { filename: "client-logo-35-shree-nandi-properties.png", alt: "Shree Nandi Properties client logo" },
+  { filename: "client-logo-36-svt-logo.jpg", alt: "SVT client logo" },
+  { filename: "client-logo-37-triumph-logo.png", alt: "Triumph client logo" },
+  { filename: "client-logo-38-tvs-motors-logo.png", alt: "TVS Motors client logo" },
+  { filename: "client-logo-39-vajram.png", alt: "Vajram client logo" },
+  { filename: "client-logo-40-varenya-logo.png", alt: "Varenya client logo" }
+];
