@@ -145,7 +145,7 @@ export function StrategyCallForm() {
         <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg bg-[#F7F5F0] p-5 text-[#14202B] shadow-2xl md:p-8">
           <div className="mb-7">
             <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#3E86F5]">Qualified enquiry</p>
-            <h3 className="mt-2 font-[var(--font-manrope)] text-3xl font-extrabold">Request a Strategy Call</h3>
+            <h3 className="mt-2 font-[var(--font-manrope)] text-3xl font-extrabold">Get a Free Ad account Audit</h3>
           </div>
           <div className="grid gap-5 md:grid-cols-2">
             <Field label="Full Name" error={errors.fullName?.message}>
@@ -196,7 +196,7 @@ export function StrategyCallForm() {
           {errors.consent?.message ? <p className="mt-2 text-sm font-bold text-[#C35A4A]">{errors.consent.message}</p> : null}
 
           <button type="submit" className="button button-dark mt-6 w-full" disabled={isSubmitting}>
-            {isSubmitting ? "Submitting..." : "Request My Strategy Call"} <Send size={18} />
+            {isSubmitting ? "Submitting..." : "Get My Free Ad account Audit"} <Send size={18} />
           </button>
           <p className="mt-3 text-center text-xs text-[#465464]">
             Your information is kept private and used only to respond to your enquiry.

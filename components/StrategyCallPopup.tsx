@@ -68,12 +68,12 @@ export function StrategyCallPopup() {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[80] bg-[#09111A]/82 px-3 py-3 backdrop-blur-md md:px-4 md:py-8" role="dialog" aria-modal="true" aria-label="Request a strategy call">
+    <div className="fixed inset-0 z-[80] bg-[#09111A]/82 px-3 py-3 backdrop-blur-md md:px-4 md:py-8" role="dialog" aria-modal="true" aria-label="Get a free ad account audit">
       <div className="relative mx-auto max-h-full max-w-6xl overflow-y-auto rounded-lg border border-white/12 bg-[#09111A] shadow-2xl">
         <button
           type="button"
           className="sticky left-full top-3 z-10 mr-3 flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-[#09111A]/90 text-[#F5F3EE] transition hover:border-[#D6A64F]/50 hover:text-[#D6A64F]"
-          aria-label="Close strategy call form"
+          aria-label="Close ad account audit form"
           onClick={() => {
             setOpen(false);
             setDismissed(true);
