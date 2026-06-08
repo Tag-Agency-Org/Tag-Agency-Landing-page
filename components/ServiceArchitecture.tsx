@@ -25,7 +25,7 @@ const services = [
   {
     title: "Creative Production",
     copy: "Campaign-focused visual production designed to help communicate value clearly across digital advertising placements.",
-    capabilities: ["[VERIFY BEFORE PUBLISHING]", "Product photography", "Video production", "Ad creative direction"]
+    capabilities: ["Product photography", "Video production", "Ad creative direction"]
   }
 ];
 

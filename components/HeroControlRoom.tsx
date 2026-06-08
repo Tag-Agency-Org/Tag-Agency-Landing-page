@@ -13,15 +13,19 @@ export function HeroControlRoom() {
         <div className="max-w-3xl">
           <p className="eyebrow">META ADS • GOOGLE ADS • LEAD GENERATION FUNNELS</p>
           <h1 className="mt-5 font-[var(--font-manrope)] text-4xl font-extrabold leading-[1.05] text-[#F5F3EE] sm:text-5xl md:text-7xl">
-            Turn Ad Spend Into Qualified Business Opportunities
+            Tired of Spending on Ads Without Getting Qualified Leads?
           </h1>
           <p className="mt-6 max-w-2xl text-base leading-7 text-[#AFBAC7] md:text-lg md:leading-8">
-            TAG Agency helps growth-focused businesses improve lead quality, campaign efficiency and acquisition
-            strategy through specialised Meta Ads, Google Ads and conversion-focused funnels.
+            TAG Agency helps real estate, automobile, education, healthcare and local businesses generate better
+            enquiries through Meta Ads, Google Ads and conversion-focused funnels.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href={phoneHref} className="button button-primary" aria-label="Call TAG Agency to book a strategy call">
-              Book a Strategy Call <ArrowRight size={18} />
+            <a
+              href={phoneHref}
+              className="button button-primary"
+              aria-label="Call TAG Agency to get a free ad account audit"
+            >
+              Get a Free Ad account Audit <ArrowRight size={18} />
             </a>
             <a href="#process" className="button button-secondary">
               Explore Our Approach

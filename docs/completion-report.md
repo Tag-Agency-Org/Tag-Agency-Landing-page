@@ -61,7 +61,7 @@
 - UTM parameters, page URL, submitted date and referrer URL are captured.
 - Google Apps Script code is included at `docs/google-apps-script.js`.
 - Deployment instructions are included at `docs/form-integration.md`.
-- Main `Book a Strategy Call` CTAs use `tel:+917411110987` for smartphone dial-pad opening.
+- Main `Get a Free Ad account Audit` CTAs use `tel:+917411110987` for smartphone dial-pad opening.
 - WhatsApp widget uses `https://wa.me/917411110987`.
 
 ## SEO and Accessibility Status
