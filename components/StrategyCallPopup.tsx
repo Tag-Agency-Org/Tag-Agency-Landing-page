@@ -11,19 +11,38 @@ export function StrategyCallPopup() {
   useEffect(() => {
     if (dismissed || open) return;
 
-    const onScroll = () => {
-      const teamSection = document.getElementById("team");
-      if (!teamSection) return;
+    let animationFrame = 0;
 
-      const triggerPoint = teamSection.offsetTop + 160;
+    const checkHeroPassed = () => {
+      const heroSection = document.getElementById("top");
+      if (!heroSection) return;
+
+      const triggerPoint = heroSection.offsetTop + heroSection.offsetHeight;
       if (window.scrollY > triggerPoint) {
         setOpen(true);
       }
     };
 
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    const scheduleCheck = () => {
+      if (animationFrame) return;
+
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = 0;
+        checkHeroPassed();
+      });
+    };
+
+    const initialCheckTimeout = window.setTimeout(scheduleCheck, 250);
+
+    scheduleCheck();
+    window.addEventListener("scroll", scheduleCheck, { passive: true });
+    return () => {
+      window.clearTimeout(initialCheckTimeout);
+      window.removeEventListener("scroll", scheduleCheck);
+      if (animationFrame) {
+        window.cancelAnimationFrame(animationFrame);
+      }
+    };
   }, [dismissed, open]);
 
   useEffect(() => {
