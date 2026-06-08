@@ -40,7 +40,30 @@ export const metadata: Metadata = {
     type: "website"
   },
   icons: {
-    icon: "/assets/tag-agency/tag-favicon.png"
+    icon: [
+      {
+        url: "/favicon.ico?v=2",
+        type: "image/x-icon"
+      },
+      {
+        url: "/favicons/favicon-16x16.png?v=2",
+        sizes: "16x16",
+        type: "image/png"
+      },
+      {
+        url: "/favicons/favicon-32x32.png?v=2",
+        sizes: "32x32",
+        type: "image/png"
+      }
+    ],
+    shortcut: "/favicon.ico?v=2",
+    apple: [
+      {
+        url: "/favicons/apple-touch-icon.png?v=2",
+        sizes: "180x180",
+        type: "image/png"
+      }
+    ]
   }
 };
 
