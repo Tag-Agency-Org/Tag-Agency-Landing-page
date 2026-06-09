@@ -95,12 +95,13 @@ a {
 
 .attention-pulse {
   transform-origin: center;
-  animation: attentionPulse 3.2s ease-in-out infinite;
+  animation: attentionPulse 1.6s ease-in-out infinite;
+  will-change: transform, box-shadow;
 }
 
 .attention-pulse:hover {
   animation: none;
-  transform: translateY(-1px) scale(1.025);
+  transform: translateY(-1px) scale(1.04);
 }
 
 .button-secondary {
@@ -336,16 +337,14 @@ a {
 
 @keyframes attentionPulse {
   0%,
-  12%,
-  24%,
   100% {
     transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(214, 166, 79, 0);
+    box-shadow: 0 8px 20px rgba(214, 166, 79, 0.2);
   }
 
-  18% {
-    transform: scale(1.025);
-    box-shadow: 0 12px 34px rgba(214, 166, 79, 0.38);
+  50% {
+    transform: scale(1.07);
+    box-shadow: 0 14px 38px rgba(214, 166, 79, 0.62);
   }
 }
 
