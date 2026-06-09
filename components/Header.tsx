@@ -50,7 +50,7 @@ export function Header() {
         </nav>
         <a
           href={phoneHref}
-          className="button button-primary desktop-header-cta"
+          className="button button-primary attention-pulse desktop-header-cta"
           aria-label="Call TAG Agency to get a free ad account audit"
         >
           Get a Free Ad account Audit
@@ -77,7 +77,11 @@ export function Header() {
                 {label}
               </a>
             ))}
-            <a href={phoneHref} className="button button-primary mt-2" onClick={() => setOpen(false)}>
+            <a
+              href={phoneHref}
+              className="button button-primary attention-pulse mt-2"
+              onClick={() => setOpen(false)}
+            >
               Get a Free Ad account Audit
             </a>
           </nav>

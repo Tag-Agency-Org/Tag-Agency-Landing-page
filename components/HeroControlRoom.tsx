@@ -22,7 +22,7 @@ export function HeroControlRoom() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <a
               href={phoneHref}
-              className="button button-primary"
+              className="button button-primary attention-pulse"
               aria-label="Call TAG Agency to get a free ad account audit"
             >
               Get a Free Ad account Audit <ArrowRight size={18} />
