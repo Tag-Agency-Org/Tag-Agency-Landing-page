@@ -64,7 +64,32 @@ export async function POST(request: Request) {
 }
 
 function getGoogleScriptUrl() {
-  return process.env.GOOGLE_APPS_SCRIPT_WEB_APP_URL || process.env.GOOGLE_SCRIPT_URL;
+  const rawValue = process.env.GOOGLE_APPS_SCRIPT_WEB_APP_URL || process.env.GOOGLE_SCRIPT_URL;
+  if (!rawValue) return "";
+
+  let value = rawValue.trim();
+  const assignmentPrefix = /^(?:GOOGLE_APPS_SCRIPT_WEB_APP_URL|GOOGLE_SCRIPT_URL)\s*=\s*/;
+  value = value.replace(assignmentPrefix, "").trim();
+
+  if (
+    (value.startsWith('"') && value.endsWith('"')) ||
+    (value.startsWith("'") && value.endsWith("'"))
+  ) {
+    value = value.slice(1, -1).trim();
+  }
+
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:" || url.hostname !== "script.google.com" || !url.pathname.endsWith("/exec")) {
+      console.error("Google Apps Script URL has an invalid origin or path");
+      return "";
+    }
+
+    return url.toString();
+  } catch {
+    console.error("Google Apps Script URL is invalid");
+    return "";
+  }
 }
 
 function parseJsonResponse(responseText: string) {
