@@ -55,6 +55,7 @@ const requirementOptions = [
 
 export function StrategyCallForm() {
   const [tracking, setTracking] = useState<Record<string, string>>({});
+  const [submitError, setSubmitError] = useState("");
 
   const {
     register,
@@ -78,6 +79,8 @@ export function StrategyCallForm() {
   }, []);
 
   async function onSubmit(values: FormValues) {
+    setSubmitError("");
+
     const payload = {
       ...values,
       ...tracking,
@@ -88,7 +91,7 @@ export function StrategyCallForm() {
 
     try {
       const controller = new AbortController();
-      timeout = window.setTimeout(() => controller.abort(), 5000);
+      timeout = window.setTimeout(() => controller.abort(), 15000);
 
       console.info("Submitting lead request to /api/leads");
       const response = await fetch("/api/leads", {
@@ -99,19 +102,27 @@ export function StrategyCallForm() {
         body: JSON.stringify(payload),
         signal: controller.signal
       });
+      const result = (await response.json().catch(() => null)) as { success?: boolean; message?: string } | null;
 
       console.info("Lead request completed before redirect", {
         ok: response.ok,
         status: response.status
       });
+
+      if (!response.ok || result?.success !== true) {
+        throw new Error(result?.message || `Lead submission failed with status ${response.status}`);
+      }
+
       reset();
+      trackMetaLead();
+      window.location.assign("/thank-you");
     } catch (error) {
       console.error("Lead submission failed before redirect:", error);
+      setSubmitError("We could not submit your enquiry right now. Please try again.");
     } finally {
       if (timeout !== undefined) {
         window.clearTimeout(timeout);
       }
-      window.location.assign("/thank-you");
     }
   }
 
@@ -201,12 +212,22 @@ export function StrategyCallForm() {
           <p className="mt-3 text-center text-xs text-[#465464]">
             Your information is kept private and used only to respond to your enquiry.
           </p>
-          <div className="mt-4 min-h-6 text-center text-sm font-bold" aria-live="polite" />
+          <div className="mt-4 min-h-6 text-center text-sm font-bold text-[#C35A4A]" aria-live="polite">
+            {submitError}
+          </div>
         </form>
         </ScrollReveal>
       </div>
     </section>
   );
+}
+
+function trackMetaLead() {
+  const metaWindow = window as typeof window & {
+    fbq?: (...args: unknown[]) => void;
+  };
+
+  metaWindow.fbq?.("track", "Lead");
 }
 
 function Field({
