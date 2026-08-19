@@ -100,19 +100,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             `
           }}
         />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              if (window.location.pathname === '/thank-you' || window.location.pathname === '/thank-you/') {
-                gtag('event', 'conversion', {
-                  'send_to': 'AW-18159720115/SeP9CMqNkeQcELOtndND',
-                  'value': 1.0,
-                  'currency': 'INR'
-                });
-              }
-            `
-          }}
-        />
       </head>
       <body style={{ fontFamily: "var(--font-inter)" }}>
         <script
