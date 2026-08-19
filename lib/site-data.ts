@@ -92,8 +92,6 @@ export const thankYouRedirectUrl = "/thank-you";
 export const facebookProfileUrl = "https://www.facebook.com/tagagency0";
 export const instagramProfileUrl = "https://www.instagram.com/tagagency.in?igsh=MWE0b2Q2Z2U4ZjZxbQ==";
 
-export const metaPixelId = "1394381722528723";
-
 export const missingVerificationItems = [
   "Case study numbers and spend formatting",
   "Approved client logos and permissions",

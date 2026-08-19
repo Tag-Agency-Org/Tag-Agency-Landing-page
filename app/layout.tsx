@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
-import { leadSiteUrl, metaPixelId } from "@/lib/site-data";
+import { leadSiteUrl } from "@/lib/site-data";
 import "./globals.css";
 
 const inter = Inter({
@@ -96,45 +96,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-
               gtag('config', 'AW-18159720115');
-
-              if (window.location.pathname === '/thank-you' || window.location.pathname === '/thank-you/') {
-                gtag('event', 'conversion', {
-                  'send_to': 'AW-18159720115/0MROCIHR3LccELOtndND',
-                  'value': 1.0,
-                  'currency': 'INR'
-                });
-              }
             `
           }}
         />
-        {/* Base Meta Pixel, installed globally so every page view is tracked once. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${metaPixelId}');
-              fbq('track', 'PageView');
-            `
-          }}
-        />
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
-            alt=""
-          />
-        </noscript>
       </head>
       <body style={{ fontFamily: "var(--font-inter)" }}>
         <script

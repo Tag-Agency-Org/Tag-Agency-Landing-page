@@ -114,7 +114,6 @@ export function StrategyCallForm() {
       }
 
       reset();
-      trackMetaLead();
       window.location.assign("/thank-you");
     } catch (error) {
       console.error("Lead submission failed before redirect:", error);
@@ -220,14 +219,6 @@ export function StrategyCallForm() {
       </div>
     </section>
   );
-}
-
-function trackMetaLead() {
-  const metaWindow = window as typeof window & {
-    fbq?: (...args: unknown[]) => void;
-  };
-
-  metaWindow.fbq?.("track", "Lead");
 }
 
 function Field({

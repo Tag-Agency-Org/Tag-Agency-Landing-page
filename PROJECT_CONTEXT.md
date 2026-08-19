@@ -14,7 +14,7 @@ This is a marketing landing page for TAG Agency that promotes Meta Ads, Google A
 - Backend: Next.js API route
 - Database: None
 - Hosting: Cloudflare Workers using OpenNext
-- APIs: Google Apps Script, Meta Pixel, Google Ads tracking, WhatsApp
+- APIs: Google Apps Script, Google tag, WhatsApp
 - Other tools: React Hook Form, Zod, Lucide React
 
 ## 4. Current Folder Structure
@@ -43,7 +43,7 @@ next.config.ts
 ## 5. Important Files
 
 - `app/page.tsx` - Homepage composition
-- `app/layout.tsx` - SEO, favicon, Google Ads, Meta Pixel, and schema
+- `app/layout.tsx` - SEO, favicon, Google tag, and schema
 - `app/api/leads/route.ts` - Lead forwarding API
 - `components/StrategyCallForm.tsx` - Form validation and submission
 - `components/StrategyCallPopup.tsx` - Scroll-triggered audit popup
@@ -65,7 +65,7 @@ next.config.ts
 - UTM and referrer capture
 - Server-side Google Apps Script forwarding
 - `/thank-you` redirect after successful submission
-- Meta Lead event and Google Ads conversion tracking
+- Google tag installed globally; no Meta Pixel tracking code is currently installed
 - SEO metadata, organization schema, manifest, and favicon
 
 ## 7. Current Problems
@@ -86,7 +86,7 @@ next.config.ts
 - June 9, 2026: Strengthened the CTA zoom animation.
 - June 8, 2026: Updated audit CTA copy and popup behavior.
 - June 8, 2026: Added the complete favicon set.
-- June 2, 2026: Updated Meta Pixel and Google Ads conversion tracking.
+- August 19, 2026: Installed the Google tag for AW-18159720115 globally. Meta Pixel tracking remains removed pending a replacement ID.
 
 ## 9. Deployment Details
 
