@@ -7,6 +7,7 @@ export const assetFilenames = [
   "tag-logo-light.svg",
   "tag-logo-dark.svg",
   "tag-favicon.png",
+  "og-preview.jpg",
   "hero-performance-dashboard.webp",
   "hero-performance-dashboard-mobile.webp",
   "hero-background-texture.webp",
@@ -87,7 +88,9 @@ export const suppliedClientLogoFiles = [
 export const phoneNumber = "7411110987";
 export const phoneHref = "tel:+917411110987";
 export const whatsAppHref = "https://wa.me/917411110987";
-export const leadSiteUrl = "https://tag-agency-landing-page.tagagencycreative0.workers.dev/";
+export const canonicalSiteUrl = "https://tagagency.in";
+export const wwwSiteUrl = "https://www.tagagency.in";
+export const leadSiteUrl = canonicalSiteUrl;
 export const thankYouRedirectUrl = "/thank-you";
 export const facebookProfileUrl = "https://www.facebook.com/tagagency0";
 export const instagramProfileUrl = "https://www.instagram.com/tagagency.in?igsh=MWE0b2Q2Z2U4ZjZxbQ==";

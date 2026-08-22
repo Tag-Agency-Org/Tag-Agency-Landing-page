@@ -66,11 +66,11 @@ next.config.ts
 - Server-side Google Apps Script forwarding
 - `/thank-you` redirect after successful submission
 - Google tag installed globally; Google Ads lead conversion fires on `/thank-you`; no Meta Pixel tracking code is currently installed
-- SEO metadata, organization schema, manifest, and favicon
+- SEO metadata, organization schema, sitemap, robots, manifest, and favicon
 
 ## 7. Current Problems
 
-- The Open Graph image URL returns `404` because `hero-performance-dashboard.webp` is missing.
+- Open Graph, Twitter card, sitemap, robots, canonical URLs, and organization schema use `https://tagagency.in`.
 - Several planned assets remain missing and use alternative layouts or placeholders.
 - `docs/completion-report.md` contains outdated form-integration information.
 - Cloudflare/OpenNext configuration exists only on the separate `cloudflare/workers-autoconfig` branch, not `main`.
@@ -91,12 +91,15 @@ next.config.ts
 
 ## 9. Deployment Details
 
-- Live site: <https://tag-agency-landing-page.tagagencycreative0.workers.dev/>
+- Production site: <https://tagagency.in>
+- Production www site: <https://www.tagagency.in>
+- Previous Workers preview URL: no longer canonical
 - GitHub: <https://github.com/Tag-Agency-Org/Tag-Agency-Landing-page>
 - Current branch: `main`
 - Git status when this document was created: clean and synchronized with `origin/main`
 - Lead endpoint: live and reports Google Apps Script as configured
-- Custom domain: none found; the Workers domain is currently canonical
+- Canonical domain: <https://tagagency.in>
+- Email DNS remains separate and must not be changed by landing-page deployment updates.
 
 ## 10. What ChatGPT Should Help With
 

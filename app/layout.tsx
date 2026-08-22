@@ -15,6 +15,8 @@ const manrope = Manrope({
   display: "swap"
 });
 
+const ogPreviewImageUrl = `${leadSiteUrl}/assets/tag-agency/og-preview.jpg`;
+
 export const metadata: Metadata = {
   title: "TAG Agency | Meta Ads and Google Ads Lead Generation Agency",
   description:
@@ -31,13 +33,26 @@ export const metadata: Metadata = {
     siteName: "TAG Agency",
     images: [
       {
-        url: "/assets/tag-agency/hero-performance-dashboard.webp",
+        url: ogPreviewImageUrl,
         width: 1200,
         height: 630,
-        alt: "Illustrative campaign signal dashboard for TAG Agency"
+        alt: "TAG Agency logo social preview"
       }
     ],
+    locale: "en_IN",
     type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TAG Agency | Meta Ads and Google Ads Lead Generation Agency",
+    description:
+      "TAG Agency helps businesses generate qualified leads through specialised Meta Ads, Google Ads and conversion-focused digital marketing strategies.",
+    images: [
+      {
+        url: ogPreviewImageUrl,
+        alt: "TAG Agency logo social preview"
+      }
+    ]
   },
   icons: {
     icon: [
@@ -100,32 +115,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             `
           }}
         />
-        {/* Meta Pixel Code */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '4739448402950382');
-              fbq('track', 'PageView');
-            `
-          }}
-        />
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: "none" }}
-            src="https://www.facebook.com/tr?id=4739448402950382&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
       </head>
       <body style={{ fontFamily: "var(--font-inter)" }}>
         <script
