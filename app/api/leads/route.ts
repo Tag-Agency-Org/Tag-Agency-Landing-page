@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-
-const requiredFields = ["fullName", "phone", "email", "consent"] as const;
+import { leadSubmissionSchema } from "@/lib/lead-validation";
 
 export async function GET() {
   return NextResponse.json({
@@ -18,7 +17,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: "Lead capture endpoint is not configured" }, { status: 500 });
   }
 
-  let payload: Record<string, unknown>;
+  let payload: unknown;
   try {
     payload = await request.json();
   } catch {
@@ -26,10 +25,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: "Invalid request body" }, { status: 400 });
   }
 
-  const missingField = requiredFields.find((field) => !String(payload[field] || "").trim());
-  if (missingField) {
-    console.error("Lead submission failed: missing required field", { missingField });
-    return NextResponse.json({ success: false, message: `Missing required field: ${missingField}` }, { status: 400 });
+  const validation = leadSubmissionSchema.safeParse(payload);
+  if (!validation.success) {
+    const invalidField = validation.error.issues[0]?.path[0] || "submission";
+    console.error("Lead submission failed: invalid field", { invalidField });
+    return NextResponse.json({ success: false, message: `Invalid field: ${invalidField}` }, { status: 400 });
   }
 
   try {
@@ -38,7 +38,10 @@ export async function POST(request: Request) {
       headers: {
         "Content-Type": "text/plain;charset=utf-8"
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify({
+        ...(typeof payload === "object" && payload !== null ? payload : {}),
+        ...validation.data
+      })
     });
 
     const responseText = await response.text();
