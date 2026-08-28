@@ -65,7 +65,7 @@ next.config.ts
 - UTM and referrer capture
 - Server-side Google Apps Script forwarding
 - `/thank-you` redirect after successful submission
-- Google tag installed globally; Google Ads lead conversion fires on `/thank-you`; no Meta Pixel tracking code is currently installed
+- Meta Pixel and Google tag installed globally; Google Ads conversion fires on `/thank-you`
 - SEO metadata, organization schema, sitemap, robots, manifest, and favicon
 
 ## 7. Current Problems
@@ -86,8 +86,9 @@ next.config.ts
 - June 9, 2026: Strengthened the CTA zoom animation.
 - June 8, 2026: Updated audit CTA copy and popup behavior.
 - June 8, 2026: Added the complete favicon set.
-- August 19, 2026: Installed the Google tag for AW-18159720115 globally. Meta Pixel tracking remains removed pending a replacement ID.
-- August 19, 2026: Added the Submit lead form conversion event (`AW-18159720115/SeP9CMqNkeQcELOtndND`) to the thank-you page.
+- August 25, 2026: Removed the remaining Google tag and Google Ads conversion event.
+- August 25, 2026: Installed Meta Pixel `4739448402950382` globally.
+- August 25, 2026: Installed the Google tag for `AW-18159720115` globally and the Submit lead form conversion event (`AW-18159720115/VG4ICPnOteccELOtndND`) on `/thank-you`.
 
 ## 9. Deployment Details
 
