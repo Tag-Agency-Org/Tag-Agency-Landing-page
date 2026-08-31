@@ -14,6 +14,14 @@
       "service": "tag-agency-landing-page"
     }
   ],
+  "d1_databases": [
+    {
+      "binding": "LEADS_DB",
+      "database_name": "tag-agency-leads",
+      "database_id": "67f2d498-f402-4ed5-86ec-74767dd06278",
+      "migrations_dir": "migrations"
+    }
+  ],
   "images": {
     "binding": "IMAGES"
   },

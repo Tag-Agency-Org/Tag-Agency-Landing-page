@@ -1,0 +1,56 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { csvCell, getUtcDateBounds, hasValidBearerToken, leadsToCsv } from "../lib/leads.ts";
+
+test("neutralizes formula-like values before CSV export", () => {
+  assert.equal(csvCell('=HYPERLINK("https://example.com")'), `"'=HYPERLINK(""https://example.com"")"`);
+  assert.equal(csvCell("+919876543210"), "'+919876543210");
+});
+
+test("quotes CSV punctuation while retaining the lead value", () => {
+  assert.equal(csvCell('TAG Agency, "Hubballi"'), '"TAG Agency, ""Hubballi"""');
+});
+
+test("creates an Excel-ready daily CSV with all stored lead fields", () => {
+  const csv = leadsToCsv([
+    {
+      id: 1,
+      submitted_at: "2026-08-31T05:00:00.000Z",
+      full_name: "Swaraj JD",
+      business_name: "TAG Agency",
+      phone: "9876543210",
+      email: "hello@tagagency.in",
+      industry: "Real Estate",
+      monthly_budget: "Below ₹25,000",
+      page_url: "https://www.tagagency.in/?utm_source=meta",
+      utm_source: "meta",
+      utm_medium: "paid_social",
+      utm_campaign: "august",
+      utm_content: "creative-a",
+      utm_term: "real-estate",
+      referrer_url: "https://www.facebook.com/"
+    }
+  ]);
+
+  assert.match(csv, /^ID,Submitted at,Full name,Business name,Phone,Email,Industry,Monthly advertising budget,Page URL,UTM source,UTM medium,UTM campaign,UTM content,UTM term,Referrer URL\r\n/);
+  assert.match(csv, /1,2026-08-31T05:00:00.000Z,Swaraj JD,TAG Agency,9876543210,hello@tagagency.in/);
+});
+
+test("uses an inclusive UTC date range for a daily download", () => {
+  assert.deepEqual(getUtcDateBounds("2026-08-31"), {
+    start: "2026-08-31T00:00:00.000Z",
+    end: "2026-09-01T00:00:00.000Z"
+  });
+});
+
+test("rejects malformed export dates", () => {
+  assert.throws(() => getUtcDateBounds("31-08-2026"), /YYYY-MM-DD/);
+  assert.throws(() => getUtcDateBounds("2026-02-30"), /valid calendar date/);
+});
+
+test("accepts only the exact administrator bearer token", () => {
+  assert.equal(hasValidBearerToken("Bearer private-token", "private-token"), true);
+  assert.equal(hasValidBearerToken("Bearer private-token-extra", "private-token"), false);
+  assert.equal(hasValidBearerToken("Basic private-token", "private-token"), false);
+  assert.equal(hasValidBearerToken(null, "private-token"), false);
+});
