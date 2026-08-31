@@ -19,16 +19,6 @@ export const budgetOptions = [
   "Above ₹3,00,000"
 ] as const;
 
-export const requirementOptions = [
-  "Meta Ads Management",
-  "Google Ads Management",
-  "Lead Generation",
-  "Campaign Audit",
-  "Landing Page / Funnel Strategy",
-  "Creative Production",
-  "Other"
-] as const;
-
 export function normalizeIndianMobile(value: string) {
   return value.trim().replace(/^\+91\s?/, "");
 }
@@ -73,30 +63,15 @@ const emailSchema = z
   .max(254, "Enter a shorter email address")
   .email("Enter a valid email address");
 
-const messageSchema = z
-  .string()
-  .trim()
-  .min(10, "Share a little more about your current challenge")
-  .max(1500, "Keep your message within 1,500 characters");
-
 export const leadFormSchema = z.object({
   fullName: fullNameSchema,
   businessName: businessNameSchema,
   phone: phoneSchema,
   email: emailSchema,
   industry: z.enum(industryOptions, { errorMap: () => ({ message: "Select your industry" }) }),
-  monthlyBudget: z.enum(budgetOptions, { errorMap: () => ({ message: "Select your monthly advertising budget" }) }),
-  primaryRequirement: z.enum(requirementOptions, { errorMap: () => ({ message: "Select your primary requirement" }) }),
-  message: messageSchema,
-  consent: z.literal(true, {
-    errorMap: () => ({ message: "Consent is required before submitting" })
-  })
+  monthlyBudget: z.enum(budgetOptions, { errorMap: () => ({ message: "Select your monthly advertising budget" }) })
 });
 
-export const leadSubmissionSchema = leadFormSchema.extend({
-  consent: z.literal("Yes", {
-    errorMap: () => ({ message: "Consent is required before submitting" })
-  })
-});
+export const leadSubmissionSchema = leadFormSchema;
 
 export type LeadFormValues = z.infer<typeof leadFormSchema>;

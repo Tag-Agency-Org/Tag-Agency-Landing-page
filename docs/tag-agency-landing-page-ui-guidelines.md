@@ -122,7 +122,7 @@ Input class: `.form-input`
 - Inputs should be 48px tall or taller.
 - Use clear labels above fields.
 - Keep validation messages short and specific.
-- Preserve the consent checkbox for lead forms.
+- Keep a concise privacy note below lead-form submissions.
 - Lead forms should post through `/api/leads`, not directly to third-party scripts from the browser.
 
 ### Motion

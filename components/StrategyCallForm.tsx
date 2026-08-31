@@ -8,7 +8,6 @@ import {
   budgetOptions,
   industryOptions,
   leadFormSchema,
-  requirementOptions,
   sanitizeIndianMobileInput,
   type LeadFormValues
 } from "@/lib/lead-validation";
@@ -49,8 +48,7 @@ export function StrategyCallForm() {
 
     const payload = {
       ...values,
-      ...tracking,
-      consent: values.consent ? "Yes" : "No"
+      ...tracking
     };
 
     let timeout: number | undefined;
@@ -120,8 +118,7 @@ export function StrategyCallForm() {
         <ScrollReveal delay={0.08}>
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="rounded-lg bg-[#F7F5F0] p-5 text-[#14202B] shadow-2xl md:p-8">
           <div className="mb-7">
-            <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#3E86F5]">Qualified enquiry</p>
-            <h3 className="mt-2 font-[var(--font-manrope)] text-3xl font-extrabold">Get a Free Ad account Audit</h3>
+            <h3 className="font-[var(--font-manrope)] text-3xl font-extrabold">Get a Free Ad account Audit</h3>
           </div>
           <div className="grid gap-5 md:grid-cols-2">
             <Field label="Full Name" error={errors.fullName?.message}>
@@ -198,31 +195,7 @@ export function StrategyCallForm() {
                 ))}
               </select>
             </Field>
-            <Field label="Primary Requirement" error={errors.primaryRequirement?.message} wide>
-              <select {...register("primaryRequirement")} className="form-input" required>
-                <option value="">Select requirement</option>
-                {requirementOptions.map((option) => (
-                  <option key={option}>{option}</option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Message / Current Challenge" error={errors.message?.message} wide>
-              <textarea
-                {...register("message")}
-                className="form-input min-h-32 resize-y"
-                maxLength={1500}
-                minLength={10}
-                placeholder="Tell us what you need help with"
-                required
-              />
-            </Field>
           </div>
-
-          <label className="mt-5 flex gap-3 text-sm font-semibold">
-            <input type="checkbox" {...register("consent")} className="mt-1 h-5 w-5 accent-[#14202B]" />
-            <span>I agree to be contacted by TAG Agency regarding my enquiry.</span>
-          </label>
-          {errors.consent?.message ? <p className="mt-2 text-sm font-bold text-[#C35A4A]">{errors.consent.message}</p> : null}
 
           <button type="submit" className="button button-dark mt-6 w-full" disabled={isSubmitting}>
             {isSubmitting ? "Submitting..." : "Get My Free Ad account Audit"} <Send size={18} />

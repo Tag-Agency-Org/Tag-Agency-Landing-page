@@ -77,7 +77,6 @@ function validatePayload_(payload) {
   if (!clean_(payload.fullName)) errors.push("Full name is required");
   if (!clean_(payload.phone)) errors.push("Phone number is required");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean_(payload.email))) errors.push("Valid email address is required");
-  if (clean_(payload.consent).toLowerCase() !== "yes" && payload.consent !== true) errors.push("Consent is required");
   return errors;
 }
 
