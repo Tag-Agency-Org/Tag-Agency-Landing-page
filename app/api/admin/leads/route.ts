@@ -1,6 +1,8 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
+import { NextResponse } from "next/server";
 import { isValidAdminSession } from "@/lib/admin-session";
-import { getIndiaDateBounds, leadsToCsv, listLeadsForDate } from "@/lib/leads";
+import { cityCoordinates } from "@/lib/indian-cities";
+import { getIndiaDateBounds, listLeadsForDate } from "@/lib/leads";
 
 const PRIVATE_HEADERS = { "Cache-Control": "private, no-store" };
 const SESSION_COOKIE = "tag_agency_leads_session";
@@ -10,13 +12,10 @@ export async function GET(request: Request) {
   const session = sessionTokenFromRequest(request);
 
   if (!await isValidAdminSession(session, env.LEADS_ADMIN_SESSION_SECRET, Date.now())) {
-    return new Response("Unauthorized", {
-      status: 401,
-      headers: PRIVATE_HEADERS
-    });
+    return new Response("Unauthorized", { status: 401, headers: PRIVATE_HEADERS });
   }
 
-  const date = new URL(request.url).searchParams.get("date") || "";
+  const date = new URL(request.url).searchParams.get("date") ?? "";
   try {
     getIndiaDateBounds(date);
   } catch {
@@ -28,17 +27,18 @@ export async function GET(request: Request) {
 
   try {
     const leads = await listLeadsForDate(env.LEADS_DB, date);
-    return new Response(leadsToCsv(leads), {
-      headers: {
-        "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="tag-agency-leads-${date}.csv"`,
-        "Cache-Control": "private, no-store",
-        "X-Content-Type-Options": "nosniff"
-      }
+    const mappedLeads = leads.map((lead) => {
+      const coordinates = lead.city ? cityCoordinates(lead.city) : undefined;
+      return coordinates ? { ...lead, coordinates } : lead;
     });
+
+    return NextResponse.json(
+      { date, count: mappedLeads.length, leads: mappedLeads },
+      { headers: PRIVATE_HEADERS }
+    );
   } catch (error) {
-    console.error("Could not export D1 leads", error);
-    return new Response("Could not export leads right now", {
+    console.error("Could not list D1 leads", error);
+    return new Response("Could not load leads right now", {
       status: 502,
       headers: PRIVATE_HEADERS
     });

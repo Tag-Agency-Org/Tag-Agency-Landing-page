@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
+import fs from "node:fs";
+import path from "node:path";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 import {
   csvCell,
   formatSubmittedAtIndia,
@@ -7,6 +10,20 @@ import {
   hasValidBearerToken,
   leadsToCsv
 } from "../lib/leads.ts";
+
+const root = path.dirname(fileURLToPath(import.meta.url));
+const cityRoutePath = path.join(root, "../app/api/cities/route.ts");
+const listRoutePath = path.join(root, "../app/api/admin/leads/route.ts");
+
+test("creates the public city route and protected lead-list route", () => {
+  assert.equal(fs.existsSync(cityRoutePath), true);
+  assert.equal(fs.existsSync(listRoutePath), true);
+});
+
+test("lead-list route verifies a signed admin session", () => {
+  const source = fs.readFileSync(listRoutePath, "utf8");
+  assert.equal(source.includes("isValidAdminSession"), true);
+});
 
 test("neutralizes formula-like values before CSV export", () => {
   assert.equal(csvCell('=HYPERLINK("https://example.com")'), `"'=HYPERLINK(""https://example.com"")"`);

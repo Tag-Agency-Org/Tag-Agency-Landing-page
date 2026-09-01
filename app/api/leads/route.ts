@@ -1,5 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
+import { findIndianCity } from "@/lib/indian-cities";
 import { leadSubmissionSchema } from "@/lib/lead-validation";
 import { insertLead, type LeadTracking } from "@/lib/leads";
 
@@ -26,9 +27,19 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: false, message: `Invalid field: ${invalidField}` }, { status: 400 });
   }
 
+  const city = findIndianCity(validation.data.city);
+  if (!city) {
+    console.error("Lead submission failed: invalid field", { invalidField: "city" });
+    return NextResponse.json({ success: false, message: "Invalid field: city" }, { status: 400 });
+  }
+
   try {
     const { env } = await getCloudflareContext({ async: true });
-    await insertLead(env.LEADS_DB, validation.data, trackingFromPayload(payload));
+    await insertLead(
+      env.LEADS_DB,
+      { ...validation.data, city: city.name },
+      trackingFromPayload(payload)
+    );
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
     console.error("Could not store lead in Cloudflare D1", error);
