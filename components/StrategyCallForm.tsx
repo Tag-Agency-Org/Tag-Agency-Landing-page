@@ -4,54 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import {
+  budgetOptions,
+  industryOptions,
+  leadFormSchema,
+  sanitizeIndianMobileInput,
+  type LeadFormValues
+} from "@/lib/lead-validation";
 import { ScrollReveal } from "./ScrollReveal";
 import { TypingHeadline } from "./TypingHeadline";
-
-const schema = z.object({
-  fullName: z.string().min(2, "Enter your full name"),
-  businessName: z.string().min(2, "Enter your business name"),
-  phone: z.string().min(8, "Enter a valid phone number").max(20, "Enter a valid phone number"),
-  email: z.string().email("Enter a valid email address"),
-  industry: z.string().min(1, "Select your industry"),
-  monthlyBudget: z.string().min(1, "Select your monthly advertising budget"),
-  primaryRequirement: z.string().min(1, "Select your primary requirement"),
-  message: z.string().min(10, "Share a little more about your current challenge"),
-  consent: z.literal(true, {
-    errorMap: () => ({ message: "Consent is required before submitting" })
-  })
-});
-
-type FormValues = z.infer<typeof schema>;
-
-const industryOptions = [
-  "Real Estate",
-  "Automobile",
-  "Education",
-  "Healthcare",
-  "D2C / Ecommerce",
-  "Professional Services",
-  "Other"
-];
-
-const budgetOptions = [
-  "Not Started Yet",
-  "Below ₹25,000",
-  "₹25,000 to ₹50,000",
-  "₹50,000 to ₹1,00,000",
-  "₹1,00,000 to ₹3,00,000",
-  "Above ₹3,00,000"
-];
-
-const requirementOptions = [
-  "Meta Ads Management",
-  "Google Ads Management",
-  "Lead Generation",
-  "Campaign Audit",
-  "Landing Page / Funnel Strategy",
-  "Creative Production",
-  "Other"
-];
 
 export function StrategyCallForm() {
   const [tracking, setTracking] = useState<Record<string, string>>({});
@@ -62,7 +23,11 @@ export function StrategyCallForm() {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting }
-  } = useForm<FormValues>({ resolver: zodResolver(schema) });
+  } = useForm<LeadFormValues>({ resolver: zodResolver(leadFormSchema) });
+
+  const fullNameField = register("fullName");
+  const businessNameField = register("businessName");
+  const phoneField = register("phone");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -78,13 +43,12 @@ export function StrategyCallForm() {
     });
   }, []);
 
-  async function onSubmit(values: FormValues) {
+  async function onSubmit(values: LeadFormValues) {
     setSubmitError("");
 
     const payload = {
       ...values,
-      ...tracking,
-      consent: values.consent ? "Yes" : "No"
+      ...tracking
     };
 
     let timeout: number | undefined;
@@ -114,7 +78,6 @@ export function StrategyCallForm() {
       }
 
       reset();
-      trackMetaLead();
       window.location.assign("/thank-you");
     } catch (error) {
       console.error("Lead submission failed before redirect:", error);
@@ -153,26 +116,71 @@ export function StrategyCallForm() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.08}>
-        <form onSubmit={handleSubmit(onSubmit)} className="rounded-lg bg-[#F7F5F0] p-5 text-[#14202B] shadow-2xl md:p-8">
+        <form noValidate onSubmit={handleSubmit(onSubmit)} className="rounded-lg bg-[#F7F5F0] p-5 text-[#14202B] shadow-2xl md:p-8">
           <div className="mb-7">
-            <p className="text-xs font-extrabold uppercase tracking-[0.14em] text-[#3E86F5]">Qualified enquiry</p>
-            <h3 className="mt-2 font-[var(--font-manrope)] text-3xl font-extrabold">Get a Free Ad account Audit</h3>
+            <h3 className="font-[var(--font-manrope)] text-3xl font-extrabold">Get a Free Ad account Audit</h3>
           </div>
           <div className="grid gap-5 md:grid-cols-2">
             <Field label="Full Name" error={errors.fullName?.message}>
-              <input {...register("fullName")} className="form-input" autoComplete="name" />
+              <input
+                {...fullNameField}
+                className="form-input"
+                autoComplete="name"
+                inputMode="text"
+                maxLength={80}
+                onChange={(event) => {
+                  event.currentTarget.value = event.currentTarget.value.replace(/[^\p{L}\p{M} .'-]/gu, "").slice(0, 80);
+                  fullNameField.onChange(event);
+                }}
+                placeholder="Your full name"
+                required
+              />
             </Field>
             <Field label="Business Name" error={errors.businessName?.message}>
-              <input {...register("businessName")} className="form-input" autoComplete="organization" />
+              <input
+                {...businessNameField}
+                className="form-input"
+                autoComplete="organization"
+                maxLength={120}
+                onChange={(event) => {
+                  event.currentTarget.value = event.currentTarget.value
+                    .replace(/[^\p{L}\p{M}\p{N} &.,'()/-]/gu, "")
+                    .slice(0, 120);
+                  businessNameField.onChange(event);
+                }}
+                placeholder="Your business name"
+                required
+              />
             </Field>
             <Field label="Phone Number" error={errors.phone?.message}>
-              <input {...register("phone")} className="form-input" autoComplete="tel" inputMode="tel" />
+              <input
+                {...phoneField}
+                className="form-input"
+                autoComplete="tel-national"
+                inputMode="numeric"
+                maxLength={13}
+                onChange={(event) => {
+                  event.currentTarget.value = sanitizeIndianMobileInput(event.currentTarget.value);
+                  phoneField.onChange(event);
+                }}
+                placeholder="98765 43210"
+                required
+              />
             </Field>
             <Field label="Email Address" error={errors.email?.message}>
-              <input {...register("email")} className="form-input" autoComplete="email" inputMode="email" />
+              <input
+                {...register("email")}
+                className="form-input"
+                autoComplete="email"
+                inputMode="email"
+                maxLength={254}
+                placeholder="you@business.com"
+                required
+                type="email"
+              />
             </Field>
             <Field label="Industry" error={errors.industry?.message}>
-              <select {...register("industry")} className="form-input">
+              <select {...register("industry")} className="form-input" required>
                 <option value="">Select industry</option>
                 {industryOptions.map((option) => (
                   <option key={option}>{option}</option>
@@ -180,31 +188,14 @@ export function StrategyCallForm() {
               </select>
             </Field>
             <Field label="Monthly Advertising Budget" error={errors.monthlyBudget?.message}>
-              <select {...register("monthlyBudget")} className="form-input">
+              <select {...register("monthlyBudget")} className="form-input" required>
                 <option value="">Select budget</option>
                 {budgetOptions.map((option) => (
                   <option key={option}>{option}</option>
                 ))}
               </select>
             </Field>
-            <Field label="Primary Requirement" error={errors.primaryRequirement?.message} wide>
-              <select {...register("primaryRequirement")} className="form-input">
-                <option value="">Select requirement</option>
-                {requirementOptions.map((option) => (
-                  <option key={option}>{option}</option>
-                ))}
-              </select>
-            </Field>
-            <Field label="Message / Current Challenge" error={errors.message?.message} wide>
-              <textarea {...register("message")} className="form-input min-h-32 resize-y" />
-            </Field>
           </div>
-
-          <label className="mt-5 flex gap-3 text-sm font-semibold">
-            <input type="checkbox" {...register("consent")} className="mt-1 h-5 w-5 accent-[#14202B]" />
-            <span>I agree to be contacted by TAG Agency regarding my enquiry.</span>
-          </label>
-          {errors.consent?.message ? <p className="mt-2 text-sm font-bold text-[#C35A4A]">{errors.consent.message}</p> : null}
 
           <button type="submit" className="button button-dark mt-6 w-full" disabled={isSubmitting}>
             {isSubmitting ? "Submitting..." : "Get My Free Ad account Audit"} <Send size={18} />
@@ -220,14 +211,6 @@ export function StrategyCallForm() {
       </div>
     </section>
   );
-}
-
-function trackMetaLead() {
-  const metaWindow = window as typeof window & {
-    fbq?: (...args: unknown[]) => void;
-  };
-
-  metaWindow.fbq?.("track", "Lead");
 }
 
 function Field({

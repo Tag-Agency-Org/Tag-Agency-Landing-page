@@ -12,9 +12,9 @@ This is a marketing landing page for TAG Agency that promotes Meta Ads, Google A
 
 - Frontend: Next.js 15, React 19, TypeScript, Tailwind CSS 4, Framer Motion
 - Backend: Next.js API route
-- Database: None
+- Database: Cloudflare D1 (`tag-agency-leads`)
 - Hosting: Cloudflare Workers using OpenNext
-- APIs: Google Apps Script, Meta Pixel, Google Ads tracking, WhatsApp
+- APIs: Cloudflare D1, Google tag, WhatsApp
 - Other tools: React Hook Form, Zod, Lucide React
 
 ## 4. Current Folder Structure
@@ -43,14 +43,16 @@ next.config.ts
 ## 5. Important Files
 
 - `app/page.tsx` - Homepage composition
-- `app/layout.tsx` - SEO, favicon, Google Ads, Meta Pixel, and schema
-- `app/api/leads/route.ts` - Lead forwarding API
+- `app/layout.tsx` - SEO, favicon, Google tag, and schema
+- `app/api/leads/route.ts` - Validated Cloudflare D1 lead-capture API
+- `app/api/admin/leads/export/route.ts` - Token-protected daily CSV export API
+- `app/admin/leads/page.tsx` - Private daily-lead download surface
 - `components/StrategyCallForm.tsx` - Form validation and submission
 - `components/StrategyCallPopup.tsx` - Scroll-triggered audit popup
 - `app/thank-you/page.tsx` - Successful submission page
 - `app/globals.css` - Styling and CTA animation
 - `lib/site-data.ts` - URLs, phone number, assets, and Pixel ID
-- `docs/form-integration.md` - Google Apps Script setup
+- `docs/form-integration.md` - Cloudflare D1 storage and daily download instructions
 - `.env.example` - Required server environment variable
 
 ## 6. Current Features
@@ -63,14 +65,15 @@ next.config.ts
 - Mobile sticky CTA and WhatsApp widget
 - Zod-validated lead form
 - UTM and referrer capture
-- Server-side Google Apps Script forwarding
+- Server-side Cloudflare D1 lead storage
+- Owner-only daily CSV lead download at `/admin/leads`
 - `/thank-you` redirect after successful submission
-- Meta Lead event and Google Ads conversion tracking
-- SEO metadata, organization schema, manifest, and favicon
+- Meta Pixel and Google tag installed globally; Google Ads conversion fires on `/thank-you`
+- SEO metadata, organization schema, sitemap, robots, manifest, and favicon
 
 ## 7. Current Problems
 
-- The Open Graph image URL returns `404` because `hero-performance-dashboard.webp` is missing.
+- Open Graph, Twitter card, sitemap, robots, canonical URLs, and organization schema use `https://tagagency.in`.
 - Several planned assets remain missing and use alternative layouts or placeholders.
 - `docs/completion-report.md` contains outdated form-integration information.
 - Cloudflare/OpenNext configuration exists only on the separate `cloudflare/workers-autoconfig` branch, not `main`.
@@ -86,16 +89,21 @@ next.config.ts
 - June 9, 2026: Strengthened the CTA zoom animation.
 - June 8, 2026: Updated audit CTA copy and popup behavior.
 - June 8, 2026: Added the complete favicon set.
-- June 2, 2026: Updated Meta Pixel and Google Ads conversion tracking.
+- August 25, 2026: Removed the remaining Google tag and Google Ads conversion event.
+- August 25, 2026: Installed Meta Pixel `4739448402950382` globally.
+- August 25, 2026: Installed the Google tag for `AW-18159720115` globally and the Submit lead form conversion event (`AW-18159720115/VG4ICPnOteccELOtndND`) on `/thank-you`.
 
 ## 9. Deployment Details
 
-- Live site: <https://tag-agency-landing-page.tagagencycreative0.workers.dev/>
+- Production site: <https://tagagency.in>
+- Production www site: <https://www.tagagency.in>
+- Previous Workers preview URL: no longer canonical
 - GitHub: <https://github.com/Tag-Agency-Org/Tag-Agency-Landing-page>
 - Current branch: `main`
 - Git status when this document was created: clean and synchronized with `origin/main`
 - Lead endpoint: live and reports Google Apps Script as configured
-- Custom domain: none found; the Workers domain is currently canonical
+- Canonical domain: <https://tagagency.in>
+- Email DNS remains separate and must not be changed by landing-page deployment updates.
 
 ## 10. What ChatGPT Should Help With
 

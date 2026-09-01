@@ -1,5 +1,6 @@
 import { ArrowLeft, MessageCircle, PhoneCall } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { WhatsAppWidget } from "@/components/WhatsAppWidget";
@@ -16,6 +17,15 @@ export default function ThankYouPage() {
 
   return (
     <>
+      <Script id="google-ads-submit-lead-conversion" strategy="afterInteractive">
+        {`
+          gtag('event', 'conversion', {
+            'send_to': 'AW-18159720115/VG4ICPnOteccELOtndND',
+            'value': 1.0,
+            'currency': 'INR'
+          });
+        `}
+      </Script>
       <Header />
       <main className="min-h-screen bg-[#09111A] pt-20">
         <section className="section">

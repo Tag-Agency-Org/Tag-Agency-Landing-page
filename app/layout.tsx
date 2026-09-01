@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Manrope } from "next/font/google";
-import { leadSiteUrl, metaPixelId } from "@/lib/site-data";
+import Script from "next/script";
+import { leadSiteUrl } from "@/lib/site-data";
 import "./globals.css";
 
 const inter = Inter({
@@ -14,6 +15,8 @@ const manrope = Manrope({
   variable: "--font-manrope",
   display: "swap"
 });
+
+const ogPreviewImageUrl = `${leadSiteUrl}/assets/tag-agency/og-preview.jpg`;
 
 export const metadata: Metadata = {
   title: "TAG Agency | Meta Ads and Google Ads Lead Generation Agency",
@@ -31,13 +34,26 @@ export const metadata: Metadata = {
     siteName: "TAG Agency",
     images: [
       {
-        url: "/assets/tag-agency/hero-performance-dashboard.webp",
+        url: ogPreviewImageUrl,
         width: 1200,
         height: 630,
-        alt: "Illustrative campaign signal dashboard for TAG Agency"
+        alt: "TAG Agency logo social preview"
       }
     ],
+    locale: "en_IN",
     type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TAG Agency | Meta Ads and Google Ads Lead Generation Agency",
+    description:
+      "TAG Agency helps businesses generate qualified leads through specialised Meta Ads, Google Ads and conversion-focused digital marketing strategies.",
+    images: [
+      {
+        url: ogPreviewImageUrl,
+        alt: "TAG Agency logo social preview"
+      }
+    ]
   },
   icons: {
     icon: [
@@ -88,7 +104,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en-IN" className={`${inter.variable} ${manrope.variable}`}>
       <head>
-        {/* Google tag (gtag.js) */}
         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18159720115" />
         <script
           dangerouslySetInnerHTML={{
@@ -96,47 +111,36 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-
               gtag('config', 'AW-18159720115');
-
-              if (window.location.pathname === '/thank-you' || window.location.pathname === '/thank-you/') {
-                gtag('event', 'conversion', {
-                  'send_to': 'AW-18159720115/0MROCIHR3LccELOtndND',
-                  'value': 1.0,
-                  'currency': 'INR'
-                });
-              }
+              gtag('config', 'G-M2H0B2WHVD');
             `
           }}
         />
-        {/* Base Meta Pixel, installed globally so every page view is tracked once. */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '${metaPixelId}');
-              fbq('track', 'PageView');
-            `
-          }}
-        />
+        <Script id="meta-pixel" strategy="beforeInteractive">
+          {`
+            !function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '4739448402950382');
+            fbq('track', 'PageView');
+          `}
+        </Script>
+      </head>
+      <body style={{ fontFamily: "var(--font-inter)" }}>
         <noscript>
           <img
             height="1"
             width="1"
             style={{ display: "none" }}
-            src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+            src="https://www.facebook.com/tr?id=4739448402950382&ev=PageView&noscript=1"
             alt=""
           />
         </noscript>
-      </head>
-      <body style={{ fontFamily: "var(--font-inter)" }}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}

@@ -43,7 +43,6 @@ function validatePayload_(payload) {
   if (!clean_(payload.fullName)) errors.push("Full name is required");
   if (!clean_(payload.phone)) errors.push("Phone number is required");
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clean_(payload.email))) errors.push("Valid email address is required");
-  if (clean_(payload.consent).toLowerCase() !== "yes" && payload.consent !== true) errors.push("Consent is required");
   return errors;
 }
 
@@ -58,12 +57,6 @@ function buildEmailBody_(payload) {
     `Email Address: ${clean_(payload.email)}`,
     `Industry: ${clean_(payload.industry)}`,
     `Monthly Advertising Budget: ${clean_(payload.monthlyBudget)}`,
-    `Primary Requirement: ${clean_(payload.primaryRequirement)}`,
-    "",
-    "Message / Current Challenge:",
-    clean_(payload.message),
-    "",
-    `Consent: ${clean_(payload.consent)}`,
     "",
     "Tracking:",
     `Page URL: ${clean_(payload.pageUrl)}`,

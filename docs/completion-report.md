@@ -66,8 +66,9 @@
 
 ## SEO and Accessibility Status
 
-- Metadata, Open Graph data, favicon path and canonical placeholder are implemented.
-- Organization schema uses verified business name, site URL, address from the existing site and service focus.
+- Metadata, Open Graph data, Twitter card data, sitemap, robots, favicon path and canonical URL are implemented.
+- The Open Graph preview image is available at `https://tagagency.in/assets/tag-agency/og-preview.jpg`.
+- Organization schema uses verified business name, canonical site URL, address from the existing site and service focus.
 - Local Business schema is not implemented because contact details are not verified.
 - Semantic section structure and heading order are implemented.
 - Form labels, focus states, aria-live messages and keyboard-accessible navigation are implemented.

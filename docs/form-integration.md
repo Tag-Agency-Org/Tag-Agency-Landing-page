@@ -1,35 +1,37 @@
-# TAG Agency Lead Form Integration
+# TAG Agency Lead Storage and Daily Downloads
 
-## Gmail Inbox
+## How lead capture works
 
-Create a Google Apps Script project and paste the contents of `docs/google-apps-script-email.js`.
-Set `RECIPIENT_EMAIL` in that script to the Gmail inbox that should receive website leads.
+The public form posts to `/api/leads` on the same Cloudflare Worker that hosts the landing page. The Worker validates the lead, records its server-side submission time, and writes the form fields plus UTM/referrer context to the bound Cloudflare D1 database.
 
-## Deployment
-
-1. In Apps Script, click `Deploy > New deployment`.
-2. Select `Web app`.
-3. Execute as: `Me`.
-4. Who has access: `Anyone`.
-5. Deploy and copy the Web App URL.
-6. Add it to the website hosting environment:
-
-```bash
-GOOGLE_APPS_SCRIPT_WEB_APP_URL=https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec
-```
-
-## How the Live Site Works
-
-The public form submits to `/api/leads` on the same website domain, including the current Cloudflare default domain:
+The production domains are:
 
 ```text
-https://tag-agency-landing-page.tagagencycreative0.workers.dev
+https://tagagency.in
+https://www.tagagency.in
 ```
 
-That server route forwards the lead to Google Apps Script using `GOOGLE_APPS_SCRIPT_WEB_APP_URL`.
+No Google Apps Script, Gmail forwarding, or Google Sheet is required for new leads. Historical Google Sheet records remain separate unless they are deliberately imported later.
 
-This keeps the Google Apps Script URL out of the browser, avoids CORS issues, and works after hosting as long as the hosting provider has the `GOOGLE_APPS_SCRIPT_WEB_APP_URL` environment variable configured.
+## Daily CSV download
 
-Use the deployed Apps Script Web App URL ending in `/exec` for production. Do not use a `/dev` Apps Script URL in Cloudflare.
+1. Open `https://www.tagagency.in/admin/leads`.
+2. Choose the day whose leads you need.
+3. Enter the `LEADS_ADMIN_TOKEN` Worker secret.
+4. Select **Download daily CSV**.
 
-For local testing, create `.env.local` with the same variable and restart the dev server.
+The token is sent only in the download request’s authorization header. It is not stored in the browser, URL, source code, or repository. The export response is private and marked `no-store`.
+
+## Worker secret
+
+Set the token only in the Cloudflare Worker secret store:
+
+```bash
+openssl rand -base64 32 | npx wrangler secret put LEADS_ADMIN_TOKEN
+```
+
+Keep the resulting token in a password manager. If it is exposed, replace it with a new value using the same command. Do not add it to `.env`, `.env.example`, Git, or any client-side environment variable.
+
+## Data boundaries
+
+The migration creates the `leads` table and an index on `submitted_at`. Use the private CSV screen for daily business exports; do not expose an unauthenticated endpoint that lists leads. Email DNS remains separate from the website deployment and should not be changed for this feature.
