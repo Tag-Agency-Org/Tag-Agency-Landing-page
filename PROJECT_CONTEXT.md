@@ -45,8 +45,9 @@ next.config.ts
 - `app/page.tsx` - Homepage composition
 - `app/layout.tsx` - SEO, favicon, Google tag, and schema
 - `app/api/leads/route.ts` - Validated Cloudflare D1 lead-capture API
-- `app/api/admin/leads/export/route.ts` - Token-protected daily CSV export API
-- `app/admin/leads/page.tsx` - Private daily-lead download surface
+- `app/api/admin/leads/route.ts` - Session-protected lead dashboard API
+- `app/api/admin/leads/export/route.ts` - Session-protected daily CSV export API
+- `app/admin/leads/page.tsx` - Private lead dashboard login surface
 - `components/StrategyCallForm.tsx` - Form validation and submission
 - `components/StrategyCallPopup.tsx` - Scroll-triggered audit popup
 - `app/thank-you/page.tsx` - Successful submission page
@@ -66,7 +67,7 @@ next.config.ts
 - Zod-validated lead form
 - UTM and referrer capture
 - Server-side Cloudflare D1 lead storage
-- Owner-only daily CSV lead download at `/admin/leads`
+- Owner-only User ID/password lead dashboard and daily CSV download at `/admin/leads`
 - `/thank-you` redirect after successful submission
 - Meta Pixel and Google tag installed globally; Google Ads conversion fires on `/thank-you`
 - SEO metadata, organization schema, sitemap, robots, manifest, and favicon

@@ -16,22 +16,25 @@ No Google Apps Script, Gmail forwarding, or Google Sheet is required for new lea
 ## Daily CSV download
 
 1. Open `https://www.tagagency.in/admin/leads`.
-2. Choose the day whose leads you need.
-3. Enter the `LEADS_ADMIN_TOKEN` Worker secret.
-4. Select **Download daily CSV**.
+2. Sign in with the owner User ID and Password.
+3. Choose the India calendar date whose leads you need.
+4. View City locations on the India map.
+5. Select **Download CSV**.
 
-The token is sent only in the download request’s authorization header. It is not stored in the browser, URL, source code, or repository. The export response is private and marked `no-store`.
+Login creates an eight-hour HttpOnly session cookie. The password is never stored in the browser, URL, source code, or repository. The dashboard and export responses are private and marked `no-store`.
 
 ## Worker secret
 
-Set the token only in the Cloudflare Worker secret store:
+Set the owner login only in the Cloudflare Worker secret store:
 
 ```bash
-openssl rand -base64 32 | npx wrangler secret put LEADS_ADMIN_TOKEN
+printf '%s' 'tagagency-admin' | npx wrangler secret put LEADS_ADMIN_USERNAME
+openssl rand -base64 32 | npx wrangler secret put LEADS_ADMIN_PASSWORD
+openssl rand -base64 48 | npx wrangler secret put LEADS_ADMIN_SESSION_SECRET
 ```
 
-Keep the resulting token in a password manager. If it is exposed, replace it with a new value using the same command. Do not add it to `.env`, `.env.example`, Git, or any client-side environment variable.
+Keep the resulting password and session secret in a password manager. If either is exposed, replace it with a new value using the same command. Do not add them to `.env`, `.env.example`, Git, or any client-side environment variable.
 
 ## Data boundaries
 
-The migration creates the `leads` table and an index on `submitted_at`. Use the private CSV screen for daily business exports; do not expose an unauthenticated endpoint that lists leads. Email DNS remains separate from the website deployment and should not be changed for this feature.
+The migrations create the `leads` table, capture City for new entries, and index capture time and City. Existing records remain available as City not captured. Selected days use Asia/Kolkata dates and captured timestamps are displayed in IST. The dashboard session lasts eight hours and login attempts are rate-limited. Do not expose an unauthenticated endpoint that lists leads. Email DNS remains separate from the website deployment and should not be changed for this feature.
