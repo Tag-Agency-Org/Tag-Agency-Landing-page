@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { isValidAdminSession } from "@/lib/admin-session";
 import { cityCoordinates } from "@/lib/indian-cities";
-import { getIndiaDateRangeBounds, listLeadsForDateRange } from "@/lib/leads";
+import { deleteLeadById, getIndiaDateRangeBounds, listLeadsForDateRange } from "@/lib/leads";
 
 const PRIVATE_HEADERS = { "Cache-Control": "private, no-store" };
 const SESSION_COOKIE = "tag_agency_leads_session";
@@ -46,6 +46,29 @@ export async function GET(request: Request) {
       status: 502,
       headers: PRIVATE_HEADERS
     });
+  }
+}
+
+export async function DELETE(request: Request) {
+  const { env } = await getCloudflareContext({ async: true });
+  const session = sessionTokenFromRequest(request);
+
+  if (!await isValidAdminSession(session, env.LEADS_ADMIN_SESSION_SECRET, Date.now())) {
+    return new Response("Unauthorized", { status: 401, headers: PRIVATE_HEADERS });
+  }
+
+  const id = Number(new URL(request.url).searchParams.get("id"));
+  if (!Number.isSafeInteger(id) || id < 1) {
+    return new Response("Use a valid lead ID", { status: 400, headers: PRIVATE_HEADERS });
+  }
+
+  try {
+    const deleted = await deleteLeadById(env.LEADS_DB, id);
+    if (!deleted) return new Response("Lead not found", { status: 404, headers: PRIVATE_HEADERS });
+    return NextResponse.json({ success: true, id }, { headers: PRIVATE_HEADERS });
+  } catch (error) {
+    console.error("Could not delete D1 lead", error);
+    return new Response("Could not delete lead right now", { status: 502, headers: PRIVATE_HEADERS });
   }
 }
 

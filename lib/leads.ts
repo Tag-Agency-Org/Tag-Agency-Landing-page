@@ -114,6 +114,8 @@ const selectLeadsForDateAndCityStatement = `
   ORDER BY submitted_at DESC, id DESC
 `;
 
+const deleteLeadStatement = "DELETE FROM leads WHERE id = ? RETURNING id";
+
 export async function insertLead(db: D1Database, lead: LeadFormValues, tracking: LeadTracking) {
   const result = await db
     .prepare(insertLeadStatement)
@@ -157,6 +159,16 @@ export async function listLeadsForDateRange(db: D1Database, fromDate: string, to
   }
 
   return result.results;
+}
+
+export async function deleteLeadById(db: D1Database, id: number) {
+  const result = await db.prepare(deleteLeadStatement).bind(id).all<{ id: number }>();
+
+  if (!result.success) {
+    throw new Error("D1 did not confirm the lead deletion");
+  }
+
+  return result.results.length > 0;
 }
 
 export function getIndiaDateBounds(date: string) {

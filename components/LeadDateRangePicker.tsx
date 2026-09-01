@@ -91,7 +91,7 @@ export function LeadDateRangePicker({ fromDate, toDate, onUpdate }: LeadDateRang
         <ChevronDown size={16} aria-hidden="true" />
       </button>
       {open ? (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-[#09111A]/45 p-3 backdrop-blur-[1px] md:items-center md:p-8" role="presentation">
+        <div className="fixed inset-0 z-[1200] flex items-start justify-center overflow-y-auto bg-[#09111A]/45 p-3 backdrop-blur-[1px] md:items-center md:p-8" role="presentation">
           <section className="w-full max-w-5xl overflow-hidden rounded-lg border border-[#B8C3CF] bg-[#F8FAFC] text-[#14202B] shadow-2xl" role="dialog" aria-modal="true" aria-label="Select lead date range">
             <div className="flex items-center justify-between border-b border-[#D7DEE6] px-5 py-3 md:hidden"><p className="font-extrabold">Select date range</p><button className="rounded p-1 hover:bg-[#E7EDF3]" onClick={() => setOpen(false)} aria-label="Close date range picker"><X size={20} /></button></div>
             <div className="grid lg:grid-cols-[196px_minmax(0,1fr)]">

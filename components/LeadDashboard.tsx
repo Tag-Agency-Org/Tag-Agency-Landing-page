@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Download, LogOut, MapPin, Search, X } from "lucide-react";
+import { Download, LogOut, MapPin, Search, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { LeadDateRangePicker } from "./LeadDateRangePicker";
 
@@ -41,6 +41,8 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
   const [cityQuery, setCityQuery] = useState("");
   const [cityFilter, setCityFilter] = useState("");
   const [cityMessage, setCityMessage] = useState("");
+  const [leadToDelete, setLeadToDelete] = useState<DashboardLead | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const hasInvalidDateRange = fromDate > toDate;
 
   async function load() {
@@ -99,6 +101,31 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
     onLogout();
   }
 
+  async function deleteLead() {
+    if (!leadToDelete) return;
+    setIsDeleting(true);
+    const response = await fetch("/api/admin/leads?id=" + encodeURIComponent(leadToDelete.id), {
+      method: "DELETE",
+      cache: "no-store",
+      credentials: "same-origin"
+    });
+    setIsDeleting(false);
+    if (response.status === 401) return onLogout();
+    if (response.status === 404) {
+      setLeadToDelete(null);
+      setMessage("This lead was already removed.");
+      void load();
+      return;
+    }
+    if (!response.ok) return setMessage("Could not delete this lead right now.");
+
+    setLeads((currentLeads) => currentLeads.filter((lead) => lead.id !== leadToDelete.id));
+    setCount((currentCount) => Math.max(0, currentCount - 1));
+    setSelectedLead((currentLead) => currentLead?.id === leadToDelete.id ? null : currentLead);
+    setLeadToDelete(null);
+    setMessage("Lead permanently deleted.");
+  }
+
   function applyCitySearch(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const nextCity = cityQuery.trim();
@@ -130,11 +157,12 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
       <IndiaLeadMap leads={leads} selectedLead={selectedLead} onSelectCity={setSelectedCity} />
       {selectedCity ? <button className="text-left text-sm font-bold text-[#72A7FF]" onClick={() => setSelectedCity(null)}>Clear city filter: {selectedCity}</button> : null}
       <div className="overflow-x-auto rounded-xl border border-white/10">
-        <table className="w-full min-w-[950px] text-left text-sm"><thead className="bg-white/[0.06] text-[#AFBAC7]"><tr><th className="p-3">Captured (IST)</th><th className="p-3">Name</th><th className="p-3">Business</th><th className="p-3">City</th><th className="p-3">Phone</th><th className="p-3">Email</th><th className="p-3">Industry</th><th className="p-3">Budget</th><th className="p-3">Source</th><th className="p-3">Campaign</th></tr></thead>
-          <tbody>{visibleLeads.map((lead) => <tr key={lead.id} className="cursor-pointer border-t border-white/10 hover:bg-white/[0.06]" onClick={() => setSelectedLead(lead)}><td className="p-3">{capturedAt(lead.submitted_at)}</td><td className="p-3 font-bold">{lead.full_name}</td><td className="p-3">{lead.business_name}</td><td className="p-3">{lead.city || "City not captured"}{lead.coordinates ? <MapPin className="ml-1 inline h-3.5 w-3.5 text-[#72A7FF]" /> : null}</td><td className="p-3">{lead.phone}</td><td className="p-3">{lead.email}</td><td className="p-3">{lead.industry}</td><td className="p-3">{lead.monthly_budget}</td><td className="p-3">{lead.utm_source || "—"}</td><td className="p-3">{lead.utm_campaign || "—"}</td></tr>)}</tbody>
+        <table className="w-full min-w-[1060px] text-left text-sm"><thead className="bg-white/[0.06] text-[#AFBAC7]"><tr><th className="p-3">Action</th><th className="p-3">Captured (IST)</th><th className="p-3">Name</th><th className="p-3">Business</th><th className="p-3">City</th><th className="p-3">Phone</th><th className="p-3">Email</th><th className="p-3">Industry</th><th className="p-3">Budget</th><th className="p-3">Source</th><th className="p-3">Campaign</th></tr></thead>
+          <tbody>{visibleLeads.map((lead) => <tr key={lead.id} className="cursor-pointer border-t border-white/10 hover:bg-white/[0.06]" onClick={() => setSelectedLead(lead)}><td className="p-3"><button className="inline-flex items-center gap-1 rounded border border-[#C35A4A]/60 px-2.5 py-1.5 text-xs font-extrabold text-[#F2B5AD] transition hover:bg-[#C35A4A] hover:text-white" type="button" onClick={(event) => { event.stopPropagation(); setLeadToDelete(lead); }}><Trash2 size={14} /> Delete</button></td><td className="p-3">{capturedAt(lead.submitted_at)}</td><td className="p-3 font-bold">{lead.full_name}</td><td className="p-3">{lead.business_name}</td><td className="p-3">{lead.city || "City not captured"}{lead.coordinates ? <MapPin className="ml-1 inline h-3.5 w-3.5 text-[#72A7FF]" /> : null}</td><td className="p-3">{lead.phone}</td><td className="p-3">{lead.email}</td><td className="p-3">{lead.industry}</td><td className="p-3">{lead.monthly_budget}</td><td className="p-3">{lead.utm_source || "—"}</td><td className="p-3">{lead.utm_campaign || "—"}</td></tr>)}</tbody>
         </table>
       </div>
       <p className="min-h-6 text-sm font-semibold text-[#AFBAC7]" aria-live="polite">{message}</p>
+      {leadToDelete ? <div className="fixed inset-0 z-[1300] flex items-center justify-center bg-[#09111A]/70 p-4 backdrop-blur-sm" role="presentation"><section className="w-full max-w-md rounded-xl border border-white/15 bg-[#101B27] p-6 shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="delete-lead-title"><h2 id="delete-lead-title" className="text-xl font-extrabold">Delete this lead?</h2><p className="mt-3 text-sm leading-6 text-[#AFBAC7]">This will permanently delete the lead for <strong className="text-[#F7F5F0]">{leadToDelete.full_name}</strong> from the database. This cannot be undone.</p><div className="mt-6 flex justify-end gap-3"><button className="button min-h-10 border border-white/15 px-4 py-2 text-sm" type="button" disabled={isDeleting} onClick={() => setLeadToDelete(null)}>Cancel</button><button className="button min-h-10 bg-[#C35A4A] px-4 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-60" type="button" disabled={isDeleting} onClick={() => void deleteLead()}><Trash2 size={16} /> {isDeleting ? "Deleting..." : "Delete lead"}</button></div></section></div> : null}
     </div>
   );
 }

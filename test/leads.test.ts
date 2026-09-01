@@ -146,6 +146,49 @@ test("queries D1 for an exact city only when an administrator filters by city", 
   assert.deepEqual(boundValues, ["2026-08-31T18:30:00.000Z", "2026-09-02T18:30:00.000Z", "Bengaluru"]);
 });
 
+test("deletes exactly the requested lead ID from D1", async () => {
+  const deleteLeadById = (leadLibrary as {
+    deleteLeadById?: (db: D1Database, id: number) => Promise<boolean>;
+  }).deleteLeadById;
+  assert.equal(typeof deleteLeadById, "function");
+  let boundValues: unknown[] = [];
+  const db = {
+    prepare() {
+      return {
+        bind(...values: unknown[]) {
+          boundValues = values;
+          return {
+            all: async () => ({ success: true, results: [{ id: 42 }] })
+          };
+        }
+      };
+    }
+  } as unknown as D1Database;
+
+  assert.equal(await deleteLeadById?.(db, 42), true);
+  assert.deepEqual(boundValues, [42]);
+});
+
+test("does not report a deleted lead when D1 found no matching ID", async () => {
+  const deleteLeadById = (leadLibrary as {
+    deleteLeadById?: (db: D1Database, id: number) => Promise<boolean>;
+  }).deleteLeadById;
+  assert.equal(typeof deleteLeadById, "function");
+  const db = {
+    prepare() {
+      return {
+        bind() {
+          return {
+            all: async () => ({ success: true, results: [] })
+          };
+        }
+      };
+    }
+  } as unknown as D1Database;
+
+  assert.equal(await deleteLeadById?.(db, 999), false);
+});
+
 test("keeps India date bounds valid beyond the four-digit year boundary", () => {
   assert.deepEqual(getIndiaDateBounds("9999-12-31"), {
     start: "9999-12-30T18:30:00.000Z",
