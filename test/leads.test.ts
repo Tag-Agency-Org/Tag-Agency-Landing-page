@@ -50,6 +50,13 @@ test("uses India midnight for a selected lead date", () => {
   });
 });
 
+test("keeps India date bounds valid beyond the four-digit year boundary", () => {
+  assert.deepEqual(getIndiaDateBounds("9999-12-31"), {
+    start: "9999-12-30T18:30:00.000Z",
+    end: "9999-12-31T18:30:00.000Z"
+  });
+});
+
 test("rejects malformed export dates", () => {
   assert.throws(() => getIndiaDateBounds("31-08-2026"), /YYYY-MM-DD/);
   assert.throws(() => getIndiaDateBounds("2026-02-30"), /valid calendar date/);

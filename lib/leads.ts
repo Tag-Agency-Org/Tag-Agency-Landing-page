@@ -146,10 +146,11 @@ export function getIndiaDateBounds(date: string) {
     throw new Error("Date must be a valid calendar date");
   }
 
-  const nextDate = new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
+  const indiaOffsetMilliseconds = 5.5 * 60 * 60 * 1_000;
+  const nextDate = new Date(Date.UTC(year, month - 1, day + 1));
   return {
-    start: new Date(`${date}T00:00:00+05:30`).toISOString(),
-    end: new Date(`${nextDate}T00:00:00+05:30`).toISOString()
+    start: new Date(startDate.getTime() - indiaOffsetMilliseconds).toISOString(),
+    end: new Date(nextDate.getTime() - indiaOffsetMilliseconds).toISOString()
   };
 }
 
