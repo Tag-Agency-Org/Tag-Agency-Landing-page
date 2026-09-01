@@ -7,6 +7,8 @@ export interface AdminSecrets {
 export const ADMIN_SESSION_SECONDS = 8 * 60 * 60;
 
 const SESSION_COOKIE = "tag_agency_leads_session";
+const ADMIN_SESSION_MILLISECONDS = ADMIN_SESSION_SECONDS * 1_000;
+const ADMIN_CREDENTIAL_CAPACITY = 256;
 const HMAC_ALGORITHM = { name: "HMAC", hash: "SHA-256" } as const;
 const BASE64_URL_PATTERN = /^[A-Za-z0-9_-]+$/;
 
@@ -15,26 +17,32 @@ type TimingSafeSubtleCrypto = SubtleCrypto & {
 };
 
 function constantTimeStringEqual(left: string, right: string) {
-  const comparisonLength = Math.max(left.length, right.length, 1);
-  const leftCodeUnits = new Uint16Array(comparisonLength);
-  const rightCodeUnits = new Uint16Array(comparisonLength);
+  const leftCodeUnits = new Uint16Array(ADMIN_CREDENTIAL_CAPACITY);
+  const rightCodeUnits = new Uint16Array(ADMIN_CREDENTIAL_CAPACITY);
 
-  for (let index = 0; index < comparisonLength; index += 1) {
+  for (let index = 0; index < ADMIN_CREDENTIAL_CAPACITY; index += 1) {
     leftCodeUnits[index] = left.charCodeAt(index) | 0;
     rightCodeUnits[index] = right.charCodeAt(index) | 0;
   }
 
   const subtle = crypto.subtle as TimingSafeSubtleCrypto;
+  let contentsMatch: boolean;
   if (typeof subtle.timingSafeEqual === "function") {
-    const contentsMatch = subtle.timingSafeEqual(leftCodeUnits, rightCodeUnits);
-    return (Number(contentsMatch) & Number(left.length === right.length)) === 1;
+    contentsMatch = subtle.timingSafeEqual(leftCodeUnits, rightCodeUnits);
+  } else {
+    let difference = 0;
+    for (let index = 0; index < ADMIN_CREDENTIAL_CAPACITY; index += 1) {
+      difference |= leftCodeUnits[index] ^ rightCodeUnits[index];
+    }
+    contentsMatch = difference === 0;
   }
 
-  let difference = left.length ^ right.length;
-  for (let index = 0; index < comparisonLength; index += 1) {
-    difference |= leftCodeUnits[index] ^ rightCodeUnits[index];
-  }
-  return difference === 0;
+  const lengthsMatch = left.length === right.length;
+  const inputsAreWithinCapacity =
+    left.length <= ADMIN_CREDENTIAL_CAPACITY && right.length <= ADMIN_CREDENTIAL_CAPACITY;
+  return (
+    (Number(contentsMatch) & Number(lengthsMatch) & Number(inputsAreWithinCapacity)) === 1
+  );
 }
 
 function bytesToBase64Url(bytes: Uint8Array) {
@@ -78,14 +86,19 @@ export function hasValidAdminCredentials(userId: string, password: string, secre
   );
 }
 
-export async function createAdminSession(expiresAt: number, secret: string) {
+export async function createAdminSession(issuedAt: number, secret: string) {
   if (!secret) throw new Error("Admin session secret is required");
-  if (!Number.isSafeInteger(expiresAt) || expiresAt <= 0) {
-    throw new Error("Admin session requires a valid expiry");
+  if (
+    !Number.isSafeInteger(issuedAt) ||
+    issuedAt <= 0 ||
+    issuedAt > Number.MAX_SAFE_INTEGER - ADMIN_SESSION_MILLISECONDS
+  ) {
+    throw new Error("Admin session requires a valid issue time");
   }
 
+  const expiresAt = issuedAt + ADMIN_SESSION_MILLISECONDS;
   const payload = bytesToBase64Url(
-    new TextEncoder().encode(JSON.stringify({ v: 1, exp: expiresAt }))
+    new TextEncoder().encode(JSON.stringify({ v: 1, iat: issuedAt, exp: expiresAt }))
   );
   const key = await importHmacKey(secret, "sign");
   const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
@@ -125,15 +138,17 @@ export async function isValidAdminSession(
 
     const session = payload as Record<string, unknown>;
     if (
-      Object.keys(session).length !== 2 ||
+      Object.keys(session).length !== 3 ||
       session.v !== 1 ||
+      !Number.isSafeInteger(session.iat) ||
+      (session.iat as number) <= 0 ||
       !Number.isSafeInteger(session.exp) ||
-      (session.exp as number) <= 0
+      (session.exp as number) - (session.iat as number) !== ADMIN_SESSION_MILLISECONDS
     ) {
       return false;
     }
 
-    return now < (session.exp as number);
+    return now >= (session.iat as number) && now < (session.exp as number);
   } catch {
     return false;
   }
