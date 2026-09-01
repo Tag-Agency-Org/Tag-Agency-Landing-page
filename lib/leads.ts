@@ -119,7 +119,11 @@ export async function insertLead(db: D1Database, lead: LeadFormValues, tracking:
 }
 
 export async function listLeadsForDate(db: D1Database, date: string) {
-  const { start, end } = getIndiaDateBounds(date);
+  return listLeadsForDateRange(db, date, date);
+}
+
+export async function listLeadsForDateRange(db: D1Database, fromDate: string, toDate: string) {
+  const { start, end } = getIndiaDateRangeBounds(fromDate, toDate);
   const result = await db.prepare(selectLeadsForDateStatement).bind(start, end).all<LeadRecord>();
 
   if (!result.success) {
@@ -152,6 +156,17 @@ export function getIndiaDateBounds(date: string) {
     start: new Date(startDate.getTime() - indiaOffsetMilliseconds).toISOString(),
     end: new Date(nextDate.getTime() - indiaOffsetMilliseconds).toISOString()
   };
+}
+
+export function getIndiaDateRangeBounds(fromDate: string, toDate: string) {
+  const from = getIndiaDateBounds(fromDate);
+  const to = getIndiaDateBounds(toDate);
+
+  if (from.start > to.start) {
+    throw new Error("To date must be the same as or after From date");
+  }
+
+  return { start: from.start, end: to.end };
 }
 
 export function getUtcDateBounds(date: string) {

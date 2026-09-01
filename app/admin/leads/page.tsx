@@ -14,7 +14,7 @@ export default function LeadDownloadsPage() {
           Lead dashboard
         </h1>
         <p className="mt-4 leading-7 text-[#AFBAC7]">
-          View captured website leads, find their city on the India map, and download the selected India date as CSV.
+          View captured website leads by India date range, find their city on the India map, and download the selected range as CSV.
         </p>
         <LeadAdminArea />
       </section>

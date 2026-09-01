@@ -1,6 +1,6 @@
 import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { isValidAdminSession } from "@/lib/admin-session";
-import { getIndiaDateBounds, leadsToCsv, listLeadsForDate } from "@/lib/leads";
+import { getIndiaDateRangeBounds, leadsToCsv, listLeadsForDateRange } from "@/lib/leads";
 
 const PRIVATE_HEADERS = { "Cache-Control": "private, no-store" };
 const SESSION_COOKIE = "tag_agency_leads_session";
@@ -16,22 +16,25 @@ export async function GET(request: Request) {
     });
   }
 
-  const date = new URL(request.url).searchParams.get("date") || "";
+  const searchParams = new URL(request.url).searchParams;
+  const date = searchParams.get("date");
+  const fromDate = searchParams.get("from") ?? date ?? "";
+  const toDate = searchParams.get("to") ?? date ?? "";
   try {
-    getIndiaDateBounds(date);
+    getIndiaDateRangeBounds(fromDate, toDate);
   } catch {
-    return new Response("Use a valid date in YYYY-MM-DD format", {
+    return new Response("Use a valid From and To date in YYYY-MM-DD format", {
       status: 400,
       headers: PRIVATE_HEADERS
     });
   }
 
   try {
-    const leads = await listLeadsForDate(env.LEADS_DB, date);
+    const leads = await listLeadsForDateRange(env.LEADS_DB, fromDate, toDate);
     return new Response(leadsToCsv(leads), {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="tag-agency-leads-${date}.csv"`,
+        "Content-Disposition": `attachment; filename="tag-agency-leads-${fromDate}-to-${toDate}.csv"`,
         "Cache-Control": "private, no-store",
         "X-Content-Type-Options": "nosniff"
       }

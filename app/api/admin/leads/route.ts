@@ -2,7 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { NextResponse } from "next/server";
 import { isValidAdminSession } from "@/lib/admin-session";
 import { cityCoordinates } from "@/lib/indian-cities";
-import { getIndiaDateBounds, listLeadsForDate } from "@/lib/leads";
+import { getIndiaDateRangeBounds, listLeadsForDateRange } from "@/lib/leads";
 
 const PRIVATE_HEADERS = { "Cache-Control": "private, no-store" };
 const SESSION_COOKIE = "tag_agency_leads_session";
@@ -15,25 +15,28 @@ export async function GET(request: Request) {
     return new Response("Unauthorized", { status: 401, headers: PRIVATE_HEADERS });
   }
 
-  const date = new URL(request.url).searchParams.get("date") ?? "";
+  const searchParams = new URL(request.url).searchParams;
+  const date = searchParams.get("date");
+  const fromDate = searchParams.get("from") ?? date ?? "";
+  const toDate = searchParams.get("to") ?? date ?? "";
   try {
-    getIndiaDateBounds(date);
+    getIndiaDateRangeBounds(fromDate, toDate);
   } catch {
-    return new Response("Use a valid date in YYYY-MM-DD format", {
+    return new Response("Use a valid From and To date in YYYY-MM-DD format", {
       status: 400,
       headers: PRIVATE_HEADERS
     });
   }
 
   try {
-    const leads = await listLeadsForDate(env.LEADS_DB, date);
+    const leads = await listLeadsForDateRange(env.LEADS_DB, fromDate, toDate);
     const mappedLeads = leads.map((lead) => {
       const coordinates = lead.city ? cityCoordinates(lead.city) : undefined;
       return coordinates ? { ...lead, coordinates } : lead;
     });
 
     return NextResponse.json(
-      { date, count: mappedLeads.length, leads: mappedLeads },
+      { fromDate, toDate, count: mappedLeads.length, leads: mappedLeads },
       { headers: PRIVATE_HEADERS }
     );
   } catch (error) {

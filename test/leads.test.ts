@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import * as leadLibrary from "../lib/leads.ts";
 import {
   csvCell,
   formatSubmittedAtIndia,
@@ -77,6 +78,48 @@ test("uses India midnight for a selected lead date", () => {
     start: "2026-08-31T18:30:00.000Z",
     end: "2026-09-01T18:30:00.000Z"
   });
+});
+
+test("uses inclusive India-day bounds for a selected lead date range", () => {
+  const getRangeBounds = (leadLibrary as { getIndiaDateRangeBounds?: (fromDate: string, toDate: string) => unknown }).getIndiaDateRangeBounds;
+  assert.equal(typeof getRangeBounds, "function");
+  assert.deepEqual(getRangeBounds?.("2026-09-01", "2026-09-02"), {
+    start: "2026-08-31T18:30:00.000Z",
+    end: "2026-09-02T18:30:00.000Z"
+  });
+});
+
+test("rejects a lead date range whose end comes before its start", () => {
+  const getRangeBounds = (leadLibrary as { getIndiaDateRangeBounds?: (fromDate: string, toDate: string) => unknown }).getIndiaDateRangeBounds;
+  assert.equal(typeof getRangeBounds, "function");
+  assert.throws(
+    () => getRangeBounds?.("2026-09-02", "2026-09-01"),
+    /To date must be the same as or after From date/
+  );
+});
+
+test("queries D1 using the selected inclusive India-date range", async () => {
+  const listRange = (leadLibrary as {
+    listLeadsForDateRange?: (db: D1Database, fromDate: string, toDate: string) => Promise<unknown>;
+  }).listLeadsForDateRange;
+  assert.equal(typeof listRange, "function");
+  let boundValues: unknown[] = [];
+  const db = {
+    prepare() {
+      return {
+        bind(...values: unknown[]) {
+          boundValues = values;
+          return {
+            all: async () => ({ success: true, results: [] })
+          };
+        }
+      };
+    }
+  } as unknown as D1Database;
+
+  await listRange?.(db, "2026-09-01", "2026-09-02");
+
+  assert.deepEqual(boundValues, ["2026-08-31T18:30:00.000Z", "2026-09-02T18:30:00.000Z"]);
 });
 
 test("keeps India date bounds valid beyond the four-digit year boundary", () => {

@@ -30,16 +30,28 @@ function capturedAt(value: string) {
 }
 
 export function LeadDashboard({ onLogout }: { onLogout(): void }) {
-  const [date, setDate] = useState(indiaToday);
+  const [fromDate, setFromDate] = useState(indiaToday);
+  const [toDate, setToDate] = useState(indiaToday);
   const [leads, setLeads] = useState<DashboardLead[]>([]);
   const [count, setCount] = useState(0);
   const [message, setMessage] = useState("Loading leads...");
   const [selectedLead, setSelectedLead] = useState<DashboardLead | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const hasInvalidDateRange = fromDate > toDate;
 
   async function load() {
+    if (hasInvalidDateRange) {
+      setLeads([]);
+      setCount(0);
+      setSelectedLead(null);
+      setSelectedCity(null);
+      setMessage("To date must be the same as or after From date.");
+      return;
+    }
+
     setMessage("Loading leads...");
-    const response = await fetch("/api/admin/leads?date=" + encodeURIComponent(date), { cache: "no-store", credentials: "same-origin" });
+    const searchParams = new URLSearchParams({ from: fromDate, to: toDate });
+    const response = await fetch("/api/admin/leads?" + searchParams, { cache: "no-store", credentials: "same-origin" });
     if (response.status === 401) {
       onLogout();
       return;
@@ -51,23 +63,25 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
     const result = await response.json() as { count: number; leads: DashboardLead[] };
     setLeads(result.leads);
     setCount(result.count);
-    setMessage(result.count ? "" : "No leads captured for this India date.");
+    setMessage(result.count ? "" : "No leads captured for this India date range.");
     setSelectedLead(null);
     setSelectedCity(null);
   }
 
-  useEffect(() => { void load(); }, [date]);
+  useEffect(() => { void load(); }, [fromDate, toDate]);
 
   const visibleLeads = useMemo(() => selectedCity ? leads.filter((lead) => lead.city === selectedCity) : leads, [leads, selectedCity]);
 
   async function download() {
-    const response = await fetch("/api/admin/leads/export?date=" + encodeURIComponent(date), { credentials: "same-origin", cache: "no-store" });
+    if (hasInvalidDateRange) return setMessage("To date must be the same as or after From date.");
+    const searchParams = new URLSearchParams({ from: fromDate, to: toDate });
+    const response = await fetch("/api/admin/leads/export?" + searchParams, { credentials: "same-origin", cache: "no-store" });
     if (response.status === 401) return onLogout();
     if (!response.ok) return setMessage("Could not download leads right now.");
     const url = URL.createObjectURL(await response.blob());
     const link = document.createElement("a");
     link.href = url;
-    link.download = "tag-agency-leads-" + date + ".csv";
+    link.download = "tag-agency-leads-" + fromDate + "-to-" + toDate + ".csv";
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -80,7 +94,10 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
   return (
     <div className="mt-8 grid gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <label className="grid gap-2 text-sm font-bold"><span>Lead date (India time)</span><input className="form-input border-white/15 bg-white/5 text-[#F7F5F0] [color-scheme:dark]" type="date" value={date} onChange={(event) => setDate(event.target.value)} /></label>
+        <div className="flex flex-wrap gap-4">
+          <label className="grid gap-2 text-sm font-bold"><span>From date (India time)</span><input className="form-input border-white/15 bg-white/5 text-[#F7F5F0] [color-scheme:dark]" type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} /></label>
+          <label className="grid gap-2 text-sm font-bold"><span>To date (India time)</span><input className="form-input border-white/15 bg-white/5 text-[#F7F5F0] [color-scheme:dark]" type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} /></label>
+        </div>
         <div className="flex flex-wrap gap-3">
           <button className="button button-primary" onClick={download}><Download size={16} /> Download CSV</button>
           <button className="button border border-white/15 px-4 py-3 text-sm" onClick={logout}><LogOut size={16} /> Logout</button>
