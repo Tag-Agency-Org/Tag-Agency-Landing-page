@@ -17,8 +17,13 @@ interface D1Database {
   prepare(query: string): D1PreparedStatement;
 }
 
+interface RateLimitBinding {
+  limit(options: { key: string }): Promise<{ success: boolean }>;
+}
+
 interface CloudflareEnv {
   LEADS_DB: D1Database;
+  LOGIN_RATE_LIMIT: RateLimitBinding;
   LEADS_ADMIN_USERNAME?: string;
   LEADS_ADMIN_PASSWORD?: string;
   LEADS_ADMIN_SESSION_SECRET?: string;

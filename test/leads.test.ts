@@ -14,6 +14,8 @@ import {
 const root = path.dirname(fileURLToPath(import.meta.url));
 const cityRoutePath = path.join(root, "../app/api/cities/route.ts");
 const listRoutePath = path.join(root, "../app/api/admin/leads/route.ts");
+const loginRoutePath = path.join(root, "../app/api/admin/auth/login/route.ts");
+const wranglerPath = path.join(root, "../wrangler.jsonc");
 
 test("creates the public city route and protected lead-list route", () => {
   assert.equal(fs.existsSync(cityRoutePath), true);
@@ -23,6 +25,16 @@ test("creates the public city route and protected lead-list route", () => {
 test("lead-list route verifies a signed admin session", () => {
   const source = fs.readFileSync(listRoutePath, "utf8");
   assert.equal(source.includes("isValidAdminSession"), true);
+});
+
+test("rate-limits password login attempts before credential verification", () => {
+  const loginSource = fs.readFileSync(loginRoutePath, "utf8");
+  const wranglerSource = fs.readFileSync(wranglerPath, "utf8");
+  assert.equal(loginSource.includes("LOGIN_RATE_LIMIT.limit"), true);
+  assert.equal(loginSource.includes("rateLimitedResponse"), true);
+  assert.match(wranglerSource, /"name": "LOGIN_RATE_LIMIT"/);
+  assert.match(wranglerSource, /"limit": 5/);
+  assert.match(wranglerSource, /"period": 60/);
 });
 
 test("neutralizes formula-like values before CSV export", () => {

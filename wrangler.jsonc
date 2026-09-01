@@ -22,6 +22,16 @@
       "migrations_dir": "migrations"
     }
   ],
+  "ratelimits": [
+    {
+      "name": "LOGIN_RATE_LIMIT",
+      "namespace_id": "73480653",
+      "simple": {
+        "limit": 5,
+        "period": 60
+      }
+    }
+  ],
   "images": {
     "binding": "IMAGES"
   },

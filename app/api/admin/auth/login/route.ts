@@ -9,6 +9,11 @@ import {
 const PRIVATE_HEADERS = { "Cache-Control": "private, no-store" };
 
 export async function POST(request: Request) {
+  const { env } = await getCloudflareContext({ async: true });
+  const clientIp = request.headers.get("CF-Connecting-IP") || "unknown";
+  const rateLimit = await env.LOGIN_RATE_LIMIT.limit({ key: "login:" + clientIp });
+  if (!rateLimit.success) return rateLimitedResponse();
+
   let payload: unknown;
   try {
     payload = await request.json();
@@ -18,7 +23,6 @@ export async function POST(request: Request) {
 
   if (!isLoginPayload(payload)) return invalidCredentialsResponse();
 
-  const { env } = await getCloudflareContext({ async: true });
   const sessionSecret = env.LEADS_ADMIN_SESSION_SECRET;
   if (!sessionSecret || !hasValidAdminCredentials(payload.userId, payload.password, env)) {
     return invalidCredentialsResponse();
@@ -46,5 +50,12 @@ function invalidCredentialsResponse() {
   return NextResponse.json(
     { success: false, message: "Invalid User ID or Password" },
     { status: 401, headers: PRIVATE_HEADERS }
+  );
+}
+
+function rateLimitedResponse() {
+  return NextResponse.json(
+    { success: false, message: "Invalid User ID or Password" },
+    { status: 429, headers: PRIVATE_HEADERS }
   );
 }
