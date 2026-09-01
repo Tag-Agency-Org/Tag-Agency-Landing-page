@@ -21,6 +21,11 @@ const formSource = fs.readFileSync(
   "utf8"
 );
 
+const cityAutocompleteSource = fs.readFileSync(
+  path.join(path.dirname(fileURLToPath(import.meta.url)), "../components/CityAutocomplete.tsx"),
+  "utf8"
+);
+
 test("accepts a 10-digit Indian mobile number without +91", () => {
   const result = leadFormSchema.safeParse(completeLead);
 
@@ -56,6 +61,11 @@ test("does not render the removed qualification copy, fields, or consent checkbo
 test("renders the required City autocomplete while keeping removed fields absent", () => {
   assert.equal(formSource.includes('register("city")'), true);
   assert.equal(formSource.includes("CityAutocomplete"), true);
+});
+
+test("uses the array returned by the city suggestions endpoint", () => {
+  assert.equal(cityAutocompleteSource.includes("Array.isArray(result)"), true);
+  assert.equal(cityAutocompleteSource.includes("result.cities"), false);
 });
 
 test("rejects letters in a phone number", () => {

@@ -28,8 +28,8 @@ export function CityAutocomplete({ value, onChange, onBlur, error }: CityAutocom
       setIsLoading(true);
       try {
         const response = await fetch("/api/cities?q=" + encodeURIComponent(query), { signal: controller.signal });
-        const result = (await response.json()) as { cities?: CitySuggestion[] };
-        setSuggestions(response.ok && Array.isArray(result.cities) ? result.cities : []);
+        const result = (await response.json()) as CitySuggestion[];
+        setSuggestions(response.ok && Array.isArray(result) ? result : []);
       } catch (fetchError) {
         if ((fetchError as Error).name !== "AbortError") setSuggestions([]);
       } finally {
