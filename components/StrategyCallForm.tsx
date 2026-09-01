@@ -13,6 +13,7 @@ import {
 } from "@/lib/lead-validation";
 import { ScrollReveal } from "./ScrollReveal";
 import { TypingHeadline } from "./TypingHeadline";
+import { CityAutocomplete } from "./CityAutocomplete";
 
 export function StrategyCallForm() {
   const [tracking, setTracking] = useState<Record<string, string>>({});
@@ -22,12 +23,16 @@ export function StrategyCallForm() {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors, isSubmitting }
   } = useForm<LeadFormValues>({ resolver: zodResolver(leadFormSchema) });
 
   const fullNameField = register("fullName");
   const businessNameField = register("businessName");
   const phoneField = register("phone");
+  const cityField = register("city");
+  const city = watch("city");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -150,6 +155,13 @@ export function StrategyCallForm() {
                 }}
                 placeholder="Your business name"
                 required
+              />
+            </Field>
+            <Field label="City" error={errors.city?.message}>
+              <CityAutocomplete
+                value={city || ""}
+                onBlur={cityField.onBlur}
+                onChange={(value) => setValue("city", value, { shouldValidate: true })}
               />
             </Field>
             <Field label="Phone Number" error={errors.phone?.message}>

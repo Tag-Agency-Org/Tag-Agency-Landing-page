@@ -53,6 +53,11 @@ test("does not render the removed qualification copy, fields, or consent checkbo
   }
 });
 
+test("renders the required City autocomplete while keeping removed fields absent", () => {
+  assert.equal(formSource.includes('register("city")'), true);
+  assert.equal(formSource.includes("CityAutocomplete"), true);
+});
+
 test("rejects letters in a phone number", () => {
   const result = leadFormSchema.safeParse({ ...completeLead, phone: "98765abcde" });
 
