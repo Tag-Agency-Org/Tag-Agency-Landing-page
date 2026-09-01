@@ -20,6 +20,7 @@ export async function GET(request: Request) {
   const date = searchParams.get("date");
   const fromDate = searchParams.get("from") ?? date ?? "";
   const toDate = searchParams.get("to") ?? date ?? "";
+  const city = searchParams.get("city")?.trim() || undefined;
   try {
     getIndiaDateRangeBounds(fromDate, toDate);
   } catch {
@@ -30,11 +31,12 @@ export async function GET(request: Request) {
   }
 
   try {
-    const leads = await listLeadsForDateRange(env.LEADS_DB, fromDate, toDate);
+    const leads = await listLeadsForDateRange(env.LEADS_DB, fromDate, toDate, city);
+    const cityFileSuffix = city ? `-${city.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}` : "";
     return new Response(leadsToCsv(leads), {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
-        "Content-Disposition": `attachment; filename="tag-agency-leads-${fromDate}-to-${toDate}.csv"`,
+        "Content-Disposition": `attachment; filename="tag-agency-leads-${fromDate}-to-${toDate}${cityFileSuffix}.csv"`,
         "Cache-Control": "private, no-store",
         "X-Content-Type-Options": "nosniff"
       }

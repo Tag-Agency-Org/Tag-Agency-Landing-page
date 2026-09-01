@@ -100,7 +100,7 @@ test("rejects a lead date range whose end comes before its start", () => {
 
 test("queries D1 using the selected inclusive India-date range", async () => {
   const listRange = (leadLibrary as {
-    listLeadsForDateRange?: (db: D1Database, fromDate: string, toDate: string) => Promise<unknown>;
+    listLeadsForDateRange?: (db: D1Database, fromDate: string, toDate: string, city?: string) => Promise<unknown>;
   }).listLeadsForDateRange;
   assert.equal(typeof listRange, "function");
   let boundValues: unknown[] = [];
@@ -120,6 +120,30 @@ test("queries D1 using the selected inclusive India-date range", async () => {
   await listRange?.(db, "2026-09-01", "2026-09-02");
 
   assert.deepEqual(boundValues, ["2026-08-31T18:30:00.000Z", "2026-09-02T18:30:00.000Z"]);
+});
+
+test("queries D1 for an exact city only when an administrator filters by city", async () => {
+  const listRange = (leadLibrary as {
+    listLeadsForDateRange?: (db: D1Database, fromDate: string, toDate: string, city?: string) => Promise<unknown>;
+  }).listLeadsForDateRange;
+  assert.equal(typeof listRange, "function");
+  let boundValues: unknown[] = [];
+  const db = {
+    prepare() {
+      return {
+        bind(...values: unknown[]) {
+          boundValues = values;
+          return {
+            all: async () => ({ success: true, results: [] })
+          };
+        }
+      };
+    }
+  } as unknown as D1Database;
+
+  await listRange?.(db, "2026-09-01", "2026-09-02", "Bengaluru");
+
+  assert.deepEqual(boundValues, ["2026-08-31T18:30:00.000Z", "2026-09-02T18:30:00.000Z", "Bengaluru"]);
 });
 
 test("keeps India date bounds valid beyond the four-digit year boundary", () => {

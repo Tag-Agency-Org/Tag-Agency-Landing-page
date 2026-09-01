@@ -91,6 +91,29 @@ const selectLeadsForDateStatement = `
   ORDER BY submitted_at DESC, id DESC
 `;
 
+const selectLeadsForDateAndCityStatement = `
+  SELECT
+    id,
+    submitted_at,
+    full_name,
+    business_name,
+    phone,
+    email,
+    industry,
+    monthly_budget,
+    city,
+    page_url,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    utm_content,
+    utm_term,
+    referrer_url
+  FROM leads
+  WHERE submitted_at >= ? AND submitted_at < ? AND LOWER(city) = LOWER(?)
+  ORDER BY submitted_at DESC, id DESC
+`;
+
 export async function insertLead(db: D1Database, lead: LeadFormValues, tracking: LeadTracking) {
   const result = await db
     .prepare(insertLeadStatement)
@@ -122,9 +145,12 @@ export async function listLeadsForDate(db: D1Database, date: string) {
   return listLeadsForDateRange(db, date, date);
 }
 
-export async function listLeadsForDateRange(db: D1Database, fromDate: string, toDate: string) {
+export async function listLeadsForDateRange(db: D1Database, fromDate: string, toDate: string, city?: string) {
   const { start, end } = getIndiaDateRangeBounds(fromDate, toDate);
-  const result = await db.prepare(selectLeadsForDateStatement).bind(start, end).all<LeadRecord>();
+  const normalizedCity = city?.trim();
+  const result = normalizedCity
+    ? await db.prepare(selectLeadsForDateAndCityStatement).bind(start, end, normalizedCity).all<LeadRecord>()
+    : await db.prepare(selectLeadsForDateStatement).bind(start, end).all<LeadRecord>();
 
   if (!result.success) {
     throw new Error("D1 did not return the requested leads");

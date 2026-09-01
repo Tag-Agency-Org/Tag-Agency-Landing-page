@@ -1,8 +1,9 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { Download, LogOut, MapPin, RefreshCw } from "lucide-react";
+import { Download, LogOut, MapPin, Search, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { LeadDateRangePicker } from "./LeadDateRangePicker";
 
 export type DashboardLead = {
   id: number;
@@ -37,6 +38,9 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
   const [message, setMessage] = useState("Loading leads...");
   const [selectedLead, setSelectedLead] = useState<DashboardLead | null>(null);
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [cityQuery, setCityQuery] = useState("");
+  const [cityFilter, setCityFilter] = useState("");
+  const [cityMessage, setCityMessage] = useState("");
   const hasInvalidDateRange = fromDate > toDate;
 
   async function load() {
@@ -46,11 +50,13 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
       setSelectedLead(null);
       setSelectedCity(null);
       setMessage("To date must be the same as or after From date.");
+      setCityMessage("");
       return;
     }
 
     setMessage("Loading leads...");
     const searchParams = new URLSearchParams({ from: fromDate, to: toDate });
+    if (cityFilter) searchParams.set("city", cityFilter);
     const response = await fetch("/api/admin/leads?" + searchParams, { cache: "no-store", credentials: "same-origin" });
     if (response.status === 401) {
       onLogout();
@@ -64,17 +70,19 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
     setLeads(result.leads);
     setCount(result.count);
     setMessage(result.count ? "" : "No leads captured for this India date range.");
+    setCityMessage(cityFilter && result.count === 0 ? `No captured leads found for ${cityFilter} in this date range.` : "");
     setSelectedLead(null);
     setSelectedCity(null);
   }
 
-  useEffect(() => { void load(); }, [fromDate, toDate]);
+  useEffect(() => { void load(); }, [fromDate, toDate, cityFilter]);
 
   const visibleLeads = useMemo(() => selectedCity ? leads.filter((lead) => lead.city === selectedCity) : leads, [leads, selectedCity]);
 
   async function download() {
     if (hasInvalidDateRange) return setMessage("To date must be the same as or after From date.");
     const searchParams = new URLSearchParams({ from: fromDate, to: toDate });
+    if (cityFilter) searchParams.set("city", cityFilter);
     const response = await fetch("/api/admin/leads/export?" + searchParams, { credentials: "same-origin", cache: "no-store" });
     if (response.status === 401) return onLogout();
     if (!response.ok) return setMessage("Could not download leads right now.");
@@ -91,12 +99,27 @@ export function LeadDashboard({ onLogout }: { onLogout(): void }) {
     onLogout();
   }
 
+  function applyCitySearch(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const nextCity = cityQuery.trim();
+    setCityMessage("");
+    setCityFilter(nextCity);
+  }
+
   return (
     <div className="mt-8 grid gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
-        <div className="flex flex-wrap gap-4">
-          <label className="grid gap-2 text-sm font-bold"><span>From date (India time)</span><input className="form-input border-white/15 bg-white/5 text-[#F7F5F0] [color-scheme:dark]" type="date" value={fromDate} onChange={(event) => setFromDate(event.target.value)} /></label>
-          <label className="grid gap-2 text-sm font-bold"><span>To date (India time)</span><input className="form-input border-white/15 bg-white/5 text-[#F7F5F0] [color-scheme:dark]" type="date" value={toDate} onChange={(event) => setToDate(event.target.value)} /></label>
+        <div className="flex flex-wrap items-end gap-4">
+          <LeadDateRangePicker fromDate={fromDate} toDate={toDate} onUpdate={({ fromDate: nextFromDate, toDate: nextToDate }) => { setFromDate(nextFromDate); setToDate(nextToDate); }} />
+          <form className="grid gap-2" onSubmit={applyCitySearch}>
+            <label className="text-sm font-bold" htmlFor="lead-city-search">Search city</label>
+            <div className="flex gap-2">
+              <input id="lead-city-search" className="form-input min-w-56 border-white/15 bg-white/5 text-[#F7F5F0] placeholder:text-[#AFBAC7]" value={cityQuery} onChange={(event) => setCityQuery(event.target.value)} placeholder="Enter exact city name" aria-describedby="lead-city-search-message" />
+              <button className="button min-h-12 border border-white/15 px-4 py-2 text-sm" type="submit"><Search size={16} /> Search</button>
+              {cityFilter ? <button className="button min-h-12 border border-white/15 px-3 py-2 text-sm" type="button" aria-label="Clear city search" onClick={() => { setCityQuery(""); setCityFilter(""); setCityMessage(""); }}><X size={16} /></button> : null}
+            </div>
+            <p id="lead-city-search-message" className="min-h-4 text-xs font-semibold text-[#F2B5AD]" aria-live="polite">{cityMessage}</p>
+          </form>
         </div>
         <div className="flex flex-wrap gap-3">
           <button className="button button-primary" onClick={download}><Download size={16} /> Download CSV</button>

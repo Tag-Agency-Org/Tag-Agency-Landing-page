@@ -19,6 +19,7 @@ export async function GET(request: Request) {
   const date = searchParams.get("date");
   const fromDate = searchParams.get("from") ?? date ?? "";
   const toDate = searchParams.get("to") ?? date ?? "";
+  const city = searchParams.get("city")?.trim() || undefined;
   try {
     getIndiaDateRangeBounds(fromDate, toDate);
   } catch {
@@ -29,14 +30,14 @@ export async function GET(request: Request) {
   }
 
   try {
-    const leads = await listLeadsForDateRange(env.LEADS_DB, fromDate, toDate);
+    const leads = await listLeadsForDateRange(env.LEADS_DB, fromDate, toDate, city);
     const mappedLeads = leads.map((lead) => {
       const coordinates = lead.city ? cityCoordinates(lead.city) : undefined;
       return coordinates ? { ...lead, coordinates } : lead;
     });
 
     return NextResponse.json(
-      { fromDate, toDate, count: mappedLeads.length, leads: mappedLeads },
+      { fromDate, toDate, city: city ?? null, count: mappedLeads.length, leads: mappedLeads },
       { headers: PRIVATE_HEADERS }
     );
   } catch (error) {
