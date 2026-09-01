@@ -1,8 +1,11 @@
 export type DateRange = { fromDate: string; toDate: string };
 
+const maximumLeadHistoryStart = "2000-01-01";
+
 export const dateRangePresets = [
   { id: "today", label: "Today" },
   { id: "yesterday", label: "Yesterday" },
+  { id: "maximum", label: "Maximum" },
   { id: "last7", label: "Last 7 days" },
   { id: "last14", label: "Last 14 days" },
   { id: "last28", label: "Last 28 days" },
@@ -21,6 +24,8 @@ export function rangeForPreset(preset: string, today: string): DateRange {
       const yesterday = addDays(today, -1);
       return { fromDate: yesterday, toDate: yesterday };
     }
+    case "maximum":
+      return { fromDate: maximumLeadHistoryStart, toDate: today };
     case "last7":
       return { fromDate: addDays(today, -6), toDate: today };
     case "last14":

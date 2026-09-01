@@ -18,6 +18,15 @@ test("creates an inclusive Last 30 days preset ending today", () => {
   });
 });
 
+test("creates a Maximum preset spanning all dashboard lead history through today", () => {
+  const rangeForPreset = (pickerLibrary as PickerLibrary).rangeForPreset;
+  assert.equal(typeof rangeForPreset, "function");
+  assert.deepEqual(rangeForPreset?.("maximum", "2026-09-01"), {
+    fromDate: "2000-01-01",
+    toDate: "2026-09-01"
+  });
+});
+
 test("lays out a calendar month from Sunday through Saturday", () => {
   const calendarMonthGrid = (pickerLibrary as PickerLibrary).calendarMonthGrid;
   assert.equal(typeof calendarMonthGrid, "function");
