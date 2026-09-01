@@ -14,26 +14,28 @@ const validLead = {
   monthlyBudget: "Below ₹25,000"
 };
 
+const completeLead = { ...validLead, city: "Bengaluru" };
+
 const formSource = fs.readFileSync(
   path.join(path.dirname(fileURLToPath(import.meta.url)), "../components/StrategyCallForm.tsx"),
   "utf8"
 );
 
 test("accepts a 10-digit Indian mobile number without +91", () => {
-  const result = leadFormSchema.safeParse(validLead);
+  const result = leadFormSchema.safeParse(completeLead);
 
   assert.equal(result.success, true);
 });
 
 test("accepts an optional +91 prefix and stores the 10-digit mobile number", () => {
-  const result = leadFormSchema.safeParse({ ...validLead, phone: "+919876543210" });
+  const result = leadFormSchema.safeParse({ ...completeLead, phone: "+919876543210" });
 
   assert.equal(result.success, true);
   if (result.success) assert.equal(result.data.phone, "9876543210");
 });
 
 test("accepts an enquiry without the removed qualification inputs", () => {
-  const result = leadFormSchema.safeParse(validLead);
+  const result = leadFormSchema.safeParse(completeLead);
 
   assert.equal(result.success, true);
 });
@@ -52,19 +54,19 @@ test("does not render the removed qualification copy, fields, or consent checkbo
 });
 
 test("rejects letters in a phone number", () => {
-  const result = leadFormSchema.safeParse({ ...validLead, phone: "98765abcde" });
+  const result = leadFormSchema.safeParse({ ...completeLead, phone: "98765abcde" });
 
   assert.equal(result.success, false);
 });
 
 test("rejects non-Indian and junk phone formats at the shared validation boundary", () => {
   for (const phone of ["abc9876543210", "09876543210", "987-654-3210", "5123456789"]) {
-    assert.equal(leadFormSchema.safeParse({ ...validLead, phone }).success, false);
+    assert.equal(leadFormSchema.safeParse({ ...completeLead, phone }).success, false);
   }
 });
 
 test("rejects values outside the form's select options", () => {
-  const result = leadFormSchema.safeParse({ ...validLead, industry: "Definitely not an industry" });
+  const result = leadFormSchema.safeParse({ ...completeLead, industry: "Definitely not an industry" });
 
   assert.equal(result.success, false);
 });
@@ -78,6 +80,11 @@ test("rejects data that does not match the remaining field labels", () => {
   ];
 
   for (const invalidField of invalidFields) {
-    assert.equal(leadFormSchema.safeParse({ ...validLead, ...invalidField }).success, false);
+    assert.equal(leadFormSchema.safeParse({ ...completeLead, ...invalidField }).success, false);
   }
+});
+
+test("requires a city in every new lead", () => {
+  assert.equal(leadFormSchema.safeParse(validLead).success, false);
+  assert.equal(leadFormSchema.safeParse({ ...validLead, city: "Bengaluru" }).success, true);
 });

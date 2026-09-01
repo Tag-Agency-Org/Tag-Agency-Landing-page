@@ -63,11 +63,18 @@ const emailSchema = z
   .max(254, "Enter a shorter email address")
   .email("Enter a valid email address");
 
+const citySchema = z
+  .string()
+  .trim()
+  .min(2, "Enter your city")
+  .max(100, "Enter a shorter city name");
+
 export const leadFormSchema = z.object({
   fullName: fullNameSchema,
   businessName: businessNameSchema,
   phone: phoneSchema,
   email: emailSchema,
+  city: citySchema,
   industry: z.enum(industryOptions, { errorMap: () => ({ message: "Select your industry" }) }),
   monthlyBudget: z.enum(budgetOptions, { errorMap: () => ({ message: "Select your monthly advertising budget" }) })
 });

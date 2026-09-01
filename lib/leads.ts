@@ -19,6 +19,7 @@ export type LeadRecord = {
   email: string;
   industry: string;
   monthly_budget: string;
+  city: string | null;
   page_url: string;
   utm_source: string;
   utm_medium: string;
@@ -43,7 +44,8 @@ const leadColumns = [
   ["UTM campaign", "utm_campaign"],
   ["UTM content", "utm_content"],
   ["UTM term", "utm_term"],
-  ["Referrer URL", "referrer_url"]
+  ["Referrer URL", "referrer_url"],
+  ["City", "city"]
 ] as const satisfies ReadonlyArray<readonly [string, keyof LeadRecord]>;
 
 const insertLeadStatement = `
@@ -55,6 +57,7 @@ const insertLeadStatement = `
     email,
     industry,
     monthly_budget,
+    city,
     page_url,
     utm_source,
     utm_medium,
@@ -62,7 +65,7 @@ const insertLeadStatement = `
     utm_content,
     utm_term,
     referrer_url
-  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 `;
 
 const selectLeadsForDateStatement = `
@@ -75,6 +78,7 @@ const selectLeadsForDateStatement = `
     email,
     industry,
     monthly_budget,
+    city,
     page_url,
     utm_source,
     utm_medium,
@@ -98,6 +102,7 @@ export async function insertLead(db: D1Database, lead: LeadFormValues, tracking:
       lead.email,
       lead.industry,
       lead.monthlyBudget,
+      lead.city,
       trackingValue(tracking.pageUrl),
       trackingValue(tracking.utmSource),
       trackingValue(tracking.utmMedium),
@@ -114,7 +119,7 @@ export async function insertLead(db: D1Database, lead: LeadFormValues, tracking:
 }
 
 export async function listLeadsForDate(db: D1Database, date: string) {
-  const { start, end } = getUtcDateBounds(date);
+  const { start, end } = getIndiaDateBounds(date);
   const result = await db.prepare(selectLeadsForDateStatement).bind(start, end).all<LeadRecord>();
 
   if (!result.success) {
@@ -124,7 +129,7 @@ export async function listLeadsForDate(db: D1Database, date: string) {
   return result.results;
 }
 
-export function getUtcDateBounds(date: string) {
+export function getIndiaDateBounds(date: string) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
   if (!match) throw new Error("Date must use YYYY-MM-DD");
 
@@ -141,8 +146,31 @@ export function getUtcDateBounds(date: string) {
     throw new Error("Date must be a valid calendar date");
   }
 
-  const endDate = new Date(Date.UTC(year, month - 1, day + 1));
-  return { start: startDate.toISOString(), end: endDate.toISOString() };
+  const nextDate = new Date(Date.UTC(year, month - 1, day + 1)).toISOString().slice(0, 10);
+  return {
+    start: new Date(`${date}T00:00:00+05:30`).toISOString(),
+    end: new Date(`${nextDate}T00:00:00+05:30`).toISOString()
+  };
+}
+
+export function getUtcDateBounds(date: string) {
+  return getIndiaDateBounds(date);
+}
+
+export function formatSubmittedAtIndia(utcTimestamp: string) {
+  const dateTime = new Intl.DateTimeFormat("en-IN", {
+    dateStyle: "medium",
+    timeStyle: "medium",
+    timeZone: "Asia/Kolkata"
+  }).format(new Date(utcTimestamp));
+  const timeZoneName = new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    timeZoneName: "short"
+  })
+    .formatToParts(new Date(utcTimestamp))
+    .find((part) => part.type === "timeZoneName")?.value;
+
+  return timeZoneName ? `${dateTime} ${timeZoneName}` : dateTime;
 }
 
 export function csvCell(value: unknown) {
@@ -152,8 +180,11 @@ export function csvCell(value: unknown) {
 }
 
 export function leadsToCsv(leads: LeadRecord[]) {
-  const header = leadColumns.map(([label]) => csvCell(label)).join(",");
-  const rows = leads.map((lead) => leadColumns.map(([, key]) => csvCell(lead[key])).join(","));
+  const header = [...leadColumns.map(([label]) => csvCell(label)), "Captured at IST"].join(",");
+  const rows = leads.map((lead) => [
+    ...leadColumns.map(([, key]) => csvCell(lead[key])),
+    csvCell(formatSubmittedAtIndia(lead.submitted_at))
+  ].join(","));
   return [header, ...rows].join("\r\n") + "\r\n";
 }
 

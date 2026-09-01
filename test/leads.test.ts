@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { csvCell, getUtcDateBounds, hasValidBearerToken, leadsToCsv } from "../lib/leads.ts";
+import {
+  csvCell,
+  formatSubmittedAtIndia,
+  getIndiaDateBounds,
+  hasValidBearerToken,
+  leadsToCsv
+} from "../lib/leads.ts";
 
 test("neutralizes formula-like values before CSV export", () => {
   assert.equal(csvCell('=HYPERLINK("https://example.com")'), `"'=HYPERLINK(""https://example.com"")"`);
@@ -22,6 +28,7 @@ test("creates an Excel-ready daily CSV with all stored lead fields", () => {
       email: "hello@tagagency.in",
       industry: "Real Estate",
       monthly_budget: "Below ₹25,000",
+      city: "Bengaluru",
       page_url: "https://www.tagagency.in/?utm_source=meta",
       utm_source: "meta",
       utm_medium: "paid_social",
@@ -32,20 +39,49 @@ test("creates an Excel-ready daily CSV with all stored lead fields", () => {
     }
   ]);
 
-  assert.match(csv, /^ID,Submitted at,Full name,Business name,Phone,Email,Industry,Monthly advertising budget,Page URL,UTM source,UTM medium,UTM campaign,UTM content,UTM term,Referrer URL\r\n/);
+  assert.match(csv, /^ID,Submitted at,Full name,Business name,Phone,Email,Industry,Monthly advertising budget,Page URL,UTM source,UTM medium,UTM campaign,UTM content,UTM term,Referrer URL,City,Captured at IST\r\n/);
   assert.match(csv, /1,2026-08-31T05:00:00.000Z,Swaraj JD,TAG Agency,9876543210,hello@tagagency.in/);
 });
 
-test("uses an inclusive UTC date range for a daily download", () => {
-  assert.deepEqual(getUtcDateBounds("2026-08-31"), {
-    start: "2026-08-31T00:00:00.000Z",
-    end: "2026-09-01T00:00:00.000Z"
+test("uses India midnight for a selected lead date", () => {
+  assert.deepEqual(getIndiaDateBounds("2026-09-01"), {
+    start: "2026-08-31T18:30:00.000Z",
+    end: "2026-09-01T18:30:00.000Z"
   });
 });
 
 test("rejects malformed export dates", () => {
-  assert.throws(() => getUtcDateBounds("31-08-2026"), /YYYY-MM-DD/);
-  assert.throws(() => getUtcDateBounds("2026-02-30"), /valid calendar date/);
+  assert.throws(() => getIndiaDateBounds("31-08-2026"), /YYYY-MM-DD/);
+  assert.throws(() => getIndiaDateBounds("2026-02-30"), /valid calendar date/);
+});
+
+test("includes city and India capture time in CSV", () => {
+  const csv = leadsToCsv([
+    {
+      id: 1,
+      submitted_at: "2026-08-31T18:30:00.000Z",
+      full_name: "Swaraj JD",
+      business_name: "TAG Agency",
+      phone: "9876543210",
+      email: "hello@tagagency.in",
+      industry: "Real Estate",
+      monthly_budget: "Below ₹25,000",
+      city: "Bengaluru",
+      page_url: "https://www.tagagency.in/",
+      utm_source: "",
+      utm_medium: "",
+      utm_campaign: "",
+      utm_content: "",
+      utm_term: "",
+      referrer_url: ""
+    }
+  ]);
+
+  assert.match(csv, /City,Captured at IST/);
+});
+
+test("formats submitted timestamps in India Standard Time for CSV", () => {
+  assert.match(formatSubmittedAtIndia("2026-08-31T18:30:00.000Z"), /1 Sept 2026.*12:00:00 am IST/);
 });
 
 test("accepts only the exact administrator bearer token", () => {
