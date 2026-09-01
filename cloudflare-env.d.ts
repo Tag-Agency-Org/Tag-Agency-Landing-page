@@ -19,4 +19,7 @@ interface D1Database {
 
 interface CloudflareEnv {
   LEADS_DB: D1Database;
+  LEADS_ADMIN_USERNAME?: string;
+  LEADS_ADMIN_PASSWORD?: string;
+  LEADS_ADMIN_SESSION_SECRET?: string;
 }
